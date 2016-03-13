@@ -1,0 +1,67 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SmartOfficeMetro"
+             xmlns:Custom="http://metro.mahapps.com/winfx/xaml/controls" x:Class="SmartOfficeMetro.MainDelivery"
+             mc:Ignorable="d" 
+             
+             BorderThickness="2" BorderBrush="Beige" d:DesignWidth="328.282" d:DesignHeight="193.749" >
+    
+    <Grid>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="0.5*"/>
+        </Grid.ColumnDefinitions>
+
+        <Button x:Name="buttonMail" Click="mailService" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Grid.Column="1" Padding="15px">
+            <StackPanel>
+                <Grid>
+                    <Grid Width="128" Height="128" Visibility="Collapsed" />
+                    <Path Data="M11.352,11.514041L15.829998,15.093997 20.305998,11.514041 31.659012,18.383 0,18.383z M32,1.77002L32,16.700015 21.340009,10.233034z M0,1.77002L10.656001,10.233034 0,16.700015z M0,0L31.659012,0 15.829998,12.664004z" Stretch="Uniform" Fill="#FFFFFFFF" Width="68" Height="68" Margin="0,0,0,0" RenderTransformOrigin="0.5,0.5">
+                        <Path.RenderTransform>
+                            <TransformGroup>
+                                <TransformGroup.Children>
+                                    <RotateTransform Angle="0" />
+                                    <ScaleTransform ScaleX="1" ScaleY="1" />
+                                </TransformGroup.Children>
+                            </TransformGroup>
+                        </Path.RenderTransform>
+                    </Path>
+                </Grid>
+                <TextBlock FontFamily="Segoe UI Light" FontSize="20">Mail Service</TextBlock>
+            </StackPanel>
+        </Button>
+
+
+
+        <Button Click="orderCoffee" Padding="15px">
+            <StackPanel>
+
+                <Grid>
+                    <Grid Width="128" Height="128" Visibility="Collapsed" />
+                    <Path Data="M25.008985,17.204142C24.885023,19.22412 24.629041,21.3091 24.080028,23.244078 27.098035,22.874087 27.560987,21.794095 27.589002,20.204114 27.614027,18.799121 27.21803,17.714131 25.008985,17.204142z M3.030031,13.979166C3.030031,13.979166 1.7470103,22.469092 8.1699872,27.395041 8.1699872,27.395041 5.2000151,19.174117 6.9589877,13.979166z M0,12.029187L25.122999,12.029187C25.122999,12.889179 25.120008,13.80917 25.104017,14.764162 29.04103,15.424152 30.820999,17.584136 30.820999,20.144109 30.820999,23.094086 28.464002,25.505059 23.167003,25.719062 22.44099,27.270043 21.442028,28.635035 20.072031,29.690026 23.13203,29.925017 25.122999,30.300013 25.122999,30.720015 25.122999,31.430007 19.497995,32.000003 12.562018,32.000003 5.6240263,32.000003 2.0707012E-07,31.430007 0,30.720015 2.0707012E-07,30.300013 1.9879773,29.925017 5.0499906,29.690026 0.0059816551,25.799056 2.0707012E-07,17.644133 0,12.029187z M26.430006,1.4902836C26.802015,1.4912829 27.203992,1.730279 27.266004,2.2002762 27.544996,4.3652566 26.382032,5.7752474 24.343029,6.365238 22.447032,6.9152358 19.476022,6.9552367 18.807016,9.2142103 18.534006,10.1342 17.098032,9.7442043 17.370981,8.8202169 17.97999,6.7752378 19.758005,5.9402464 21.705028,5.480244 23.706005,5.0102551 26.115003,4.8152569 25.779005,2.2002762 25.71803,1.723283 26.057996,1.4882845 26.430006,1.4902836z M22.273998,0.00029942672C22.580028,-0.0077037629 22.893993,0.14429525 23.023998,0.50829032 25.104017,6.3822363 15.117012,4.1172579 14.616035,8.6422174 14.512031,9.5872085 13.021002,9.5972107 13.129035,8.6422174 13.388983,6.2772415 15.146003,5.0922473 17.266,4.3822549 19.031991,3.792264 22.500988,3.4822693 21.588024,0.90828803 21.398021,0.36729276 21.827037,0.012300323 22.273998,0.00029942672z" Stretch="Uniform" Fill="#FFFFFFFF" Width="68" Height="68" Margin="0,0,0,0" RenderTransformOrigin="0.5,0.5">
+                        <Path.RenderTransform>
+                            <TransformGroup>
+                                <TransformGroup.Children>
+                                    <RotateTransform Angle="0" />
+                                    <ScaleTransform ScaleX="1" ScaleY="1" />
+                                </TransformGroup.Children>
+                            </TransformGroup>
+                        </Path.RenderTransform>
+                    </Path>
+                </Grid>
+                <TextBlock FontFamily="Segoe UI Light" FontSize="20">Order Coffee</TextBlock>
+            </StackPanel>
+        </Button>
+        
+    </Grid>
+    
+</UserControl>

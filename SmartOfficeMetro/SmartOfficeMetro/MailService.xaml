@@ -1,0 +1,78 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SmartOfficeMetro"
+             xmlns:Custom="http://metro.mahapps.com/winfx/xaml/controls" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" xmlns:TimePicker="clr-namespace:RoyT.TimePicker;assembly=RoyT.TimePicker" xmlns:Emit="clr-namespace:System.Reflection.Emit;assembly=mscorlib" x:Class="SmartOfficeMetro.MailService"
+             mc:Ignorable="d" 
+             d:DesignHeight="320.532" d:DesignWidth="461.977">
+    <Grid>
+
+        <Custom:MetroTabControl x:Name="metroTabControl" Margin="10,0,0,10">
+            <TabItem Header="Order Mail">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Label x:Name="label" Content="1) Please select a delivery date or click send now to request pickup immidiately:" HorizontalAlignment="Left" Margin="7,17,0,0" VerticalAlignment="Top" Grid.Row="0" FontSize="16" Grid.ColumnSpan="2" FontWeight="Bold"/>
+                    <xctk:TimePicker x:Name="timePicker" Margin="193,0,0,0" Foreground="White" Width="119" Height="24" HorizontalAlignment="Left" VerticalAlignment="Top" AllowSpin="True" AllowTextInput="True" Format="LongTime" TimeInterval="0:5:0" BorderThickness="1" MouseWheelActiveOnFocus="True" Grid.Row="1" Grid.ColumnSpan="2"/>
+                    <DatePicker x:Name="datePicker" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" SelectedDateFormat="Long" IsTodayHighlighted="True" SelectedDate="" Width="173" Grid.Row="1" />
+                    <Custom:ToggleSwitch Content="Send Now" Margin="0" HorizontalAlignment="Left" VerticalAlignment="Top" IsCheckedChanged="sendNow" Grid.Row="2"/>
+                    <Label x:Name="label1" Content="2) Select Receiver of the Mail " HorizontalAlignment="Left" Height="28" Margin="0" VerticalAlignment="Top" FontSize="16" Grid.Row="3" FontWeight="Bold"/>
+                    <ComboBox x:Name="comboBoxReciver" HorizontalAlignment="Left" Height="27" Margin="0" VerticalAlignment="Top" IsManipulationEnabled="True" IsEditable="True" Width="150" Grid.Row="4">
+                        <ListBoxItem Content="Item1"/>
+                        <ListBoxItem Content="Item2"/>
+
+                    </ComboBox>
+
+                    <Label x:Name="label2" Content="Or" HorizontalAlignment="Left" Height="28" Margin="168,33,0,0" VerticalAlignment="Center" FontSize="16" Grid.Row="3" FontWeight="Bold" Grid.RowSpan="2"/>
+                    <Custom:ToggleSwitch Content="Send to Mail Room" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Grid.Row="5" IsCheckedChanged="sendToMailRoom"/>
+                    <Custom:ToggleSwitch Content="3) Add Note" Grid.Column="1" HorizontalAlignment="Left" Margin="17,11,0,0" Grid.Row="1" VerticalAlignment="Top"/>
+                    <TextBox x:Name="textBoxNote" Grid.Column="1" HorizontalAlignment="Left" Height="116" Margin="17,16,-89,0" Grid.Row="2" Grid.RowSpan="4" TextWrapping="Wrap" VerticalAlignment="Top" Width="295" SpellCheck.IsEnabled="True" ToolTip="Add a note to your delivery"/>
+                    <Button x:Name="buttonSend" Content="Request Pickup" HorizontalAlignment="Left" Height="18" Margin="7,8,0,0" Grid.Row="6" VerticalAlignment="Top" Width="94" Click="requestPickup"/>
+
+
+                </Grid>
+            </TabItem>
+            <TabItem Header="Delivery History">
+                <Grid/>
+            </TabItem>
+
+
+
+
+        </Custom:MetroTabControl>
+
+    </Grid>
+</UserControl>
+<!--
+   <Grid Opacity="0.995">
+                    <Label x:Name="label" Content="Please select a delivery date or click send now to request pickup immidiately:" HorizontalAlignment="Left" Margin="7,17,0,0" VerticalAlignment="Top" />
+                    <xctk:TimePicker x:Name="timePicker" Margin="202,48,0,0" Foreground="White" Width="119" Height="24" HorizontalAlignment="Left" VerticalAlignment="Top" AllowSpin="True" AllowTextInput="True" Format="LongTime" TimeInterval="0:5:0" BorderThickness="1" MouseWheelActiveOnFocus="True" />
+                    <DatePicker x:Name="datePicker" HorizontalAlignment="Left" Margin="10,48,0,0" VerticalAlignment="Top" SelectedDateFormat="Long" IsTodayHighlighted="True" SelectedDate="" Width="173" />
+                    <Custom:ToggleSwitch Content="Send Now" Margin="10,77,263,180" HorizontalAlignment="Left" VerticalAlignment="Top" IsCheckedChanged="sendNow"/>
+                    <Label x:Name="label1" Content="Select Receiver of the Mail " HorizontalAlignment="Left" Height="28" Margin="10,111,0,0" VerticalAlignment="Top" FontSize="20"/>
+                    <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Height="27" Margin="10,144,0,0" VerticalAlignment="Top" IsManipulationEnabled="True" IsEditable="True" Width="150">
+                        <ListBoxItem Content="Item1"/>
+                        <ListBoxItem Content="Item2"/>
+
+                    </ComboBox>
+                    <Custom:ToggleSwitch Content="Send to Mail Room" HorizontalAlignment="Left" Margin="7,207,0,0" VerticalAlignment="Top"/>
+                    <Label x:Name="label2" Content="Or" HorizontalAlignment="Left" Margin="10,176,0,0" VerticalAlignment="Top" FontSize="20"/>
+
+                </Grid>
+    
+    -->
