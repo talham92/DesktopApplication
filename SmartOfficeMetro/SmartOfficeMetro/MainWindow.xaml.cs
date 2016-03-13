@@ -147,7 +147,7 @@ namespace SmartOfficeMetro
 
         private void orderCoffee(object sender, RoutedEventArgs e)
         { 
-            SmartOfficeClient.sendMessage("I need coffee");
+           // SmartOfficeClient.sendMessage("I need coffee");
            
         }
 

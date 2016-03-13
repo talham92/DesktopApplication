@@ -34,7 +34,7 @@ namespace SmartOfficeMetro
 
         private void orderCoffee(object sender, RoutedEventArgs e)
         {
-            SmartOfficeClient.sendMessage("Coffee"); 
+           // SmartOfficeClient.sendMessage("Coffee"); 
         }
 
         private void mailService(object sender, RoutedEventArgs e)
