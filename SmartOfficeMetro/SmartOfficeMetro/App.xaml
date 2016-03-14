@@ -11,6 +11,8 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Red.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <Color x:Key="HighlightColor">#66E51400</Color>
+            <SolidColorBrush x:Name="highlightColor" x:Key="HighlightBrushCustom" Color="{StaticResource HighlightColor}" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

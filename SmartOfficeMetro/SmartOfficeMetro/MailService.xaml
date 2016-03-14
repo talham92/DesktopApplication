@@ -6,6 +6,8 @@
              xmlns:local="clr-namespace:SmartOfficeMetro"
              xmlns:Custom="http://metro.mahapps.com/winfx/xaml/controls" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" xmlns:TimePicker="clr-namespace:RoyT.TimePicker;assembly=RoyT.TimePicker" xmlns:Emit="clr-namespace:System.Reflection.Emit;assembly=mscorlib" x:Class="SmartOfficeMetro.MailService"
              mc:Ignorable="d" 
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             
              d:DesignHeight="320.532" d:DesignWidth="461.977">
     <Grid>
 
@@ -29,7 +31,9 @@
 
                     <Label x:Name="label" Content="1) Please select a delivery date or click send now to request pickup immidiately:" HorizontalAlignment="Left" Margin="7,17,0,0" VerticalAlignment="Top" Grid.Row="0" FontSize="16" Grid.ColumnSpan="2" FontWeight="Bold"/>
                     <xctk:TimePicker x:Name="timePicker" Margin="193,0,0,0" Foreground="White" Width="119" Height="24" HorizontalAlignment="Left" VerticalAlignment="Top" AllowSpin="True" AllowTextInput="True" Format="LongTime" TimeInterval="0:5:0" BorderThickness="1" MouseWheelActiveOnFocus="True" Grid.Row="1" Grid.ColumnSpan="2"/>
-                    <DatePicker x:Name="datePicker" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" SelectedDateFormat="Long" IsTodayHighlighted="True" SelectedDate="" Width="173" Grid.Row="1" />
+                    <DatePicker x:Name="datePicker" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" SelectedDateFormat="Long" IsTodayHighlighted="True" SelectedDate="" Width="173" Grid.Row="1" >
+                        
+                    </DatePicker>
                     <Custom:ToggleSwitch Content="Send Now" Margin="0" HorizontalAlignment="Left" VerticalAlignment="Top" IsCheckedChanged="sendNow" Grid.Row="2"/>
                     <Label x:Name="label1" Content="2) Select Receiver of the Mail " HorizontalAlignment="Left" Height="28" Margin="0" VerticalAlignment="Top" FontSize="16" Grid.Row="3" FontWeight="Bold"/>
                     <ComboBox x:Name="comboBoxReciver" HorizontalAlignment="Left" Height="27" Margin="0" VerticalAlignment="Top" IsManipulationEnabled="True" IsEditable="True" Width="150" Grid.Row="4">
@@ -42,13 +46,15 @@
                     <Custom:ToggleSwitch Content="Send to Mail Room" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Grid.Row="5" IsCheckedChanged="sendToMailRoom"/>
                     <Custom:ToggleSwitch Content="3) Add Note" Grid.Column="1" HorizontalAlignment="Left" Margin="17,11,0,0" Grid.Row="1" VerticalAlignment="Top"/>
                     <TextBox x:Name="textBoxNote" Grid.Column="1" HorizontalAlignment="Left" Height="116" Margin="17,16,-89,0" Grid.Row="2" Grid.RowSpan="4" TextWrapping="Wrap" VerticalAlignment="Top" Width="295" SpellCheck.IsEnabled="True" ToolTip="Add a note to your delivery"/>
-                    <Button x:Name="buttonSend" Content="Request Pickup" HorizontalAlignment="Left" Height="18" Margin="7,8,0,0" Grid.Row="6" VerticalAlignment="Top" Width="94" Click="requestPickup"/>
+                    <Button x:Name="buttonSend" Content="Request Pickup" HorizontalAlignment="Left" Margin="7,8,0,0" Grid.Row="6" VerticalAlignment="Top" Click="requestPickup" FontSize="16" FontWeight="Bold"/>
 
 
                 </Grid>
             </TabItem>
             <TabItem Header="Delivery History">
-                <Grid/>
+                <Grid>
+                    <DataGrid x:Name="dataGridHistory" HorizontalAlignment="Left" Margin="29,33,0,0" VerticalAlignment="Top" ItemsSource="{Binding}"/>
+                </Grid>
             </TabItem>
 
 

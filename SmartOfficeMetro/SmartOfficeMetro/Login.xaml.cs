@@ -34,6 +34,8 @@ namespace SmartOfficeMetro
             String Name = "Garfield"; //need to get from database later!
             Image image = resizeImage(SmartOfficeMetro.Properties.Resources.kitten_2, new System.Drawing.Size(100,100));
             image.Tag = "kitten-2.jpg"; //image name to be used later!!
+
+            //NEED TO REPLACE BY UserLogin OBJECT SOON!!
             User loginUser = new User(username,password,Name,image);
 
             //Create Client of user

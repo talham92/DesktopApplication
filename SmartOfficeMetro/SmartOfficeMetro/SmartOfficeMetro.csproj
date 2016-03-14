@@ -106,6 +106,12 @@
       <DependentUpon>MailService.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\JSONObject.cs" />
+    <Compile Include="Notifications.xaml.cs">
+      <DependentUpon>Notifications.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NotificationTile.xaml.cs">
+      <DependentUpon>NotificationTile.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SmartOfficeClient.cs" />
     <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Commands\ShowWindow.cs" />
@@ -139,6 +145,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="MailService.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Notifications.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NotificationTile.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
