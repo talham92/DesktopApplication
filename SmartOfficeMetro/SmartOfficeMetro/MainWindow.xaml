@@ -54,6 +54,7 @@
         <StackPanel Grid.Row="2">
         <Button x:Name="buttonDelivery" Content="Delivery" Click="showMainDelivery" Grid.Row="2" VerticalAlignment="Top" Padding="2"/>
             <Button x:Name="buttonOrderCoffee" Content="Order Coffee" Click="orderCoffee" Grid.Row="2" VerticalAlignment="Top" Padding="2"/>
+            <Button x:Name="buttonNotifications" Content="Notifications" Click="showNotifications" Grid.Row="2" VerticalAlignment="Top" Padding="2"/>
             <Menu x:Name="notifyMenu" Height="100"/>
         </StackPanel>
         <DockPanel x:Name="dockPanel" Grid.Column="1" Height="Auto" LastChildFill="True" Grid.Row="2" Width="Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>

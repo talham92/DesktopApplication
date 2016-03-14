@@ -71,8 +71,18 @@ namespace SmartOfficeMetro
             //Init context menu for notification tray!
             notifyContextMenu = new System.Windows.Forms.ContextMenu();
             System.Windows.Forms.MenuItem item1= new System.Windows.Forms.MenuItem();
-            item1.Text = "hello";
+            System.Windows.Forms.MenuItem item2 = new System.Windows.Forms.MenuItem();
+            System.Windows.Forms.MenuItem item3 = new System.Windows.Forms.MenuItem();
+            System.Windows.Forms.MenuItem item4 = new System.Windows.Forms.MenuItem();
+            item1.Text = "Exit Application";
+            item2.Text = "Order Coffee";
+            item3.Text = "Notifications";
+            item4.Text = "Fetch Mail";
+            notifyContextMenu.MenuItems.Add(item2);
+            notifyContextMenu.MenuItems.Add(item3);
+            notifyContextMenu.MenuItems.Add(item4);
             notifyContextMenu.MenuItems.Add(item1);
+            
             notifyIcon.ContextMenu = notifyContextMenu;
             // notifyContextMenu.
 
@@ -123,6 +133,9 @@ namespace SmartOfficeMetro
         private void showMainDelivery(object sender, RoutedEventArgs e)
         {
             showUserControl(new MainDelivery());
+
+            
+
             /*
             if(window == null)
             {
@@ -146,7 +159,8 @@ namespace SmartOfficeMetro
         }
 
         private void orderCoffee(object sender, RoutedEventArgs e)
-        { 
+        {
+            this.ShowMessageAsync("Notification", "You ordered coffee, a robot will arrive shortly to deliver it!", MessageDialogStyle.Affirmative);
            // SmartOfficeClient.sendMessage("I need coffee");
            
         }
@@ -185,6 +199,10 @@ namespace SmartOfficeMetro
             
         }
 
+        private void showNotifications(object sender, RoutedEventArgs e)
+        {
+            showUserControl(new Notifications());
+        }
     } // main window
    
 }// namespace

@@ -97,3 +97,7 @@ C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\SmartOf
 C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\SmartOfficeMetro\SmartOfficeMetro\obj\Debug\SmartOfficeMetro.g.resources
 C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\SmartOfficeMetro\SmartOfficeMetro\obj\Debug\SmartOfficeMetro.Properties.Resources.resources
 C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\SmartOfficeMetro\SmartOfficeMetro\obj\Debug\SmartOfficeMetro.csproj.GenerateResource.Cache
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\SmartOfficeMetro\SmartOfficeMetro\obj\Debug\Notifications.g.cs
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\SmartOfficeMetro\SmartOfficeMetro\obj\Debug\NotificationTile.g.cs
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\SmartOfficeMetro\SmartOfficeMetro\obj\Debug\Notifications.baml
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\SmartOfficeMetro\SmartOfficeMetro\obj\Debug\NotificationTile.baml
