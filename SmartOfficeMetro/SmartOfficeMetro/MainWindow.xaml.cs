@@ -22,6 +22,7 @@ using System.Windows.Forms;
 using NetworksApi.TCP.CLIENT;
 using System.Net;
 using System.Net.Sockets;
+using SmartOfficeMetro.Model;
 namespace SmartOfficeMetro
 {
     /// <summary>
@@ -33,32 +34,38 @@ namespace SmartOfficeMetro
 
     public partial class MainWindow : MetroWindow
     {
-        User currentUser = null;
+        
         String imageSource;
         public string imgSrc { get { return imageSource; } set { imageSource = value; } }
         private System.Windows.Controls.Control currentControl;
-       // MainDelivery window = null;
+       
         System.Windows.Forms.NotifyIcon notifyIcon;
         System.Windows.Forms.ContextMenu notifyContextMenu;
-        
+        Notifications notification_window = null;
+        MainDelivery main_delivery_window = null;
+        MailService mail_window = null;
         
 
-        public MainWindow(User user)
+        public MainWindow()
         {
+            UserManager.Instance.Name = "";
+            UserManager.Instance.image = "kitten-2.jpg";
+           // this.Hide();
+           // Login login_window = new Login(this,SynchronizationContext.Current);
+         //   login_window.Show();
+            
             InitializeComponent();
-            this.currentUser = user;
 
-           
             //set image
             BitmapImage logo = new BitmapImage();
             logo.BeginInit();
-            logo.UriSource = new Uri("pack://application:,,,/SmartOfficeMetro;component/../../UserImages/" + currentUser.image.Tag);
+            logo.UriSource = new Uri("pack://application:,,,/SmartOfficeMetro;component/../../UserImages/" + UserManager.Instance.image);
             logo.EndInit();
             imageUserIcon.Source = logo;
 
             imageUserIcon.DataContext = imgSrc;
             //Set welcome message
-            labelWelcome.Content = "Welcome, " + currentUser.Name + "!";
+            labelWelcome.Content = "Welcome, " + UserManager.Instance.Name + "!";
 
             //notify icon image
             System.Drawing.Icon icon = Properties.Resources.favicon;
@@ -84,21 +91,97 @@ namespace SmartOfficeMetro
             notifyContextMenu.MenuItems.Add(item1);
             
             notifyIcon.ContextMenu = notifyContextMenu;
-            // notifyContextMenu.
 
-            //start connection with server!
-            
-
-            //deal with a closing event to kill threads
+         //deal with a closing event to kill threads
             this.Closed += MainWindow_Closed;
 
+         //pass the main thred for the client to use for UI purposes
+            SmartOfficeClient.main_thread = SynchronizationContext.Current;
+            
         }
 
+        /// <summary>
+        /// Displays the control based on the control type passed 1 Notification window 2 mail service window 3 delivery window
+        /// </summary>
+        /// <param name="control_type">1 Notification window 2 mail service window 3 delivery window</param>
+        public void showUserControl(int control_type)
+        {
+
+            /// 1: Notification window
+            /// 2: mail service window
+            /// 3: delivery window
+            switch(control_type)
+            {
+                case 1:
+                    currentControl = notification_window;
+                    break;
+                case 2:
+                    currentControl = mail_window;
+                    break;
+                case 3:
+                    currentControl = main_delivery_window;
+                    break;
+            }// switch
+
+        //Init User control dimensions 
+            currentControl.Height = dockPanel.Height;
+            currentControl.Width = dockPanel.Width;
+        //clear current panel
+            dockPanel.Children.Clear();
+       //add User control
+            dockPanel.Children.Add(currentControl);
+
+        }//show user control
+
+        private void showNotifications(object sender, RoutedEventArgs e)
+        {
+            showUserControl(1);
+            
+        }
+
+        private void orderCoffee(object sender, RoutedEventArgs e)
+        {
+            SmartOfficeClient.sendMessage(2, new Destination(UserManager.Instance.id));
+        }
+        private void showMainDelivery(object sender, RoutedEventArgs e)
+        {
+            showUserControl(3);
+            
+        }
+        public void UpdateUI()
+        {
+            //set image
+           // BitmapImage logo = new BitmapImage();
+           // logo.BeginInit();
+           // logo.UriSource = new Uri("pack://application:,,,/SmartOfficeMetro;component/../../UserImages/" + UserManager.Instance.image);
+           // logo.EndInit();
+         //   imageUserIcon.Source = logo;
+
+          //  imageUserIcon.DataContext = imgSrc;
+            //Set welcome message
+            labelWelcome.Content = "Welcome, " + UserManager.Instance.Name + "!";
+
+             notification_window = new Notifications();
+             main_delivery_window = new MainDelivery();
+             mail_window = new MailService();
+        }// end UI update
+
+
+        /// <summary>
+        /// Needed to override default closing method to handle thread closing
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainWindow_Closed(object sender, EventArgs e)
         {
             System.Environment.Exit(System.Environment.ExitCode);
         }
 
+        /// <summary>
+        /// Maximize the window when icon in task bar is clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void notifyIcon_MouseDoubleClick(object sender, System.Windows.Forms.MouseEventArgs e)
         {
                 this.WindowState = WindowState.Maximized;
@@ -120,6 +203,11 @@ namespace SmartOfficeMetro
             
         }
 
+        /// <summary>
+        /// Slide in the settings flyout when the necessary button is clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void showSettings_Click(object sender, RoutedEventArgs e)
         {
             var flyout = this.Flyouts.Items[0] as Flyout;
@@ -129,44 +217,22 @@ namespace SmartOfficeMetro
             }
             //switch between open and close states(true,false)
             flyout.IsOpen = !flyout.IsOpen;
-        }
-        private void showMainDelivery(object sender, RoutedEventArgs e)
-        {
-            showUserControl(new MainDelivery());
+        }// settings flyout
 
-            
-
-            /*
-            if(window == null)
-            {
-                window = new MainDelivery();
-            }
-             
-            currentControl = window;
-            //Init User control dimensions 
-            currentControl.Height = dockPanel.Height;
-            currentControl.Width = dockPanel.Width;
-            //clear current panel
-            dockPanel.Children.Clear();
-            //add User control
-            dockPanel.Children.Add(currentControl);
-            */
-            
-        }
         private void showPopup(object sender, RoutedEventArgs e)
         {
          //   popUp.ShowBalloonTip("Hi", imageSource, Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Info);
         }
 
-        private void orderCoffee(object sender, RoutedEventArgs e)
-        {
-            this.ShowMessageAsync("Notification", "You ordered coffee, a robot will arrive shortly to deliver it!", MessageDialogStyle.Affirmative);
-           // SmartOfficeClient.sendMessage("I need coffee");
-           
-        }
+        
 
        
         //To minimize window to taskbar!
+        /// <summary>
+        /// Had to override default minimize action to show notifications upon minimize
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MetroWindow_StateChanged(object sender, EventArgs e)
         {
             if (this.WindowState == WindowState.Minimized)
@@ -186,23 +252,7 @@ namespace SmartOfficeMetro
             }
         } //state changed
 
-        public void showUserControl(System.Windows.Controls.UserControl control)
-        {
-            currentControl = control;
-            //Init User control dimensions 
-            currentControl.Height = dockPanel.Height;
-            currentControl.Width = dockPanel.Width;
-            //clear current panel
-            dockPanel.Children.Clear();
-            //add User control
-            dockPanel.Children.Add(currentControl);
-            
-        }
-
-        private void showNotifications(object sender, RoutedEventArgs e)
-        {
-            showUserControl(new Notifications());
-        }
+        
     } // main window
    
 }// namespace

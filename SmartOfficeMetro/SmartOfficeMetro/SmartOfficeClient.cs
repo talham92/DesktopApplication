@@ -13,7 +13,7 @@ using MahApps.Metro.Controls.Dialogs;
 using System.Windows.Threading;
 using System.Threading;
 using Newtonsoft.Json;
-
+using SmartOfficeMetro.Model;
 
 
 
@@ -23,16 +23,20 @@ namespace SmartOfficeMetro
     public class SmartOfficeClient
     {
         public static Client client;
-        private SynchronizationContext _uiContext = SynchronizationContext.Current;
-        static JsonSerializer serializer;
+        public static Boolean allow;
+        public static Boolean dataReceived;
+        JSONObject SentData;
+        //private SmartOfficeClient clientInstance;
+        public static SynchronizationContext main_thread;
+        int connectionAttempts = 5;
+        int currentAttempts;
 
-       
-        public SmartOfficeClient(User user)
+        public SmartOfficeClient(UserManager manager)
         {
             client = new Client();
             client.ServerIp = "172.31.131.100";
             client.ServerPort = "8888";
-            client.ClientName = user.Name;
+            client.ClientName = manager.username;
 
             client.OnClientConnected += Client_OnClientConnected;
             client.OnClientDisconnected += Client_OnClientDisconnected;
@@ -42,16 +46,148 @@ namespace SmartOfficeMetro
             client.OnClientConnecting += Client_OnClientConnecting;
             
             client.Connect();
-
-            //Initialize JSON object serializer
-            serializer = new JsonSerializer();
             
         }
+        /// <summary>
+        /// Sends data to the server
+        /// </summary>
+        /// <param name="requestType"> 1: Notifications(Any kind) 2: Coffee 3: Login request 4: Mail request 5: populate mail service
+        /// </param>
+        /// <param name="obj">Desired data</param>
         public static void sendMessage(int requestType, object obj)
         {
-            String message = JsonConvert.SerializeObject(obj);
-            //String jsonMessage = JsonSerializer
+            JSONObject SentData = new JSONObject(requestType, obj);
+            String message = JsonConvert.SerializeObject(SentData);
             client.Send(message);
+        }
+
+        /// <summary>
+        /// Requests login from the server. returns true if attempt was sucessful and details are correct. False otherwise
+        /// </summary>
+        /// <param name="login">The loginUser object containing the user's username and password</param>
+        /// <returns></returns>
+        public Boolean requestLogin(Object login, SynchronizationContext context)
+        {
+            SynchronizationContext _uiContext = context; //get context of main thread of login window
+
+                try
+                {
+                //requestType 3 = login request
+                    JSONObject obj = new JSONObject(3, login);
+                    String data = JsonConvert.SerializeObject(obj);
+                    client.Send(data);
+                    dataReceived = false;
+                }
+                catch (Exception e)
+                {
+                //no connection established  
+                //need to use the context of the main thread to update UI(show message box) 
+                _uiContext.Post(new SendOrPostCallback(new Action<object>(o => 
+                {
+                    //get current instance of the login window. needed to display message box inside it
+                    var mainview0 = System.Windows.Application.Current.Windows.OfType<MetroWindow>().FirstOrDefault();
+                    mainview0.ShowMessageAsync("Oops", "Unable to connect to the server, please try again later!", MessageDialogStyle.Affirmative);
+                })), null);
+                client.Disconnect();
+                    return false;
+                } //catch
+
+            // If data still hasn't been received, wait for sometime
+            while (!SmartOfficeClient.dataReceived || currentAttempts < connectionAttempts)
+            {
+                System.Threading.Thread.Sleep(500);
+                currentAttempts++;
+            }
+
+            //If data has still not been received display server error
+            if (!dataReceived)
+            {
+                //get current instance of the main window and use it to display error
+                _uiContext.Post(new SendOrPostCallback(new Action<object>(o => 
+                {
+                    //get current instance of the login window. needed to display message box inside it
+                    var mainview0 = System.Windows.Application.Current.Windows.OfType<MetroWindow>().FirstOrDefault();
+                    mainview0.ShowMessageAsync("Oops", "Unable to connect to the server, please try again later!", MessageDialogStyle.Affirmative);
+                    client.Disconnect();
+                })), null);
+                return false;
+            }// dataReceived
+            
+
+            if (allow)
+                return true;
+            else
+            {
+                _uiContext.Post(new SendOrPostCallback(new Action<object>(o =>
+                {
+                    //get current instance of the login window. needed to display message box inside it
+                    var mainview0 = System.Windows.Application.Current.Windows.OfType<MetroWindow>().FirstOrDefault();
+                    mainview0.ShowMessageAsync("Oops", "Your Login information seems to be incorrect. Please try again", MessageDialogStyle.Affirmative);
+                    client.Disconnect();
+                })), null);
+                return false;
+            }
+
+                /*
+                try
+                {
+                    _uiContext.Post(new SendOrPostCallback(new Action<object>(o => {
+                    System.Diagnostics.Debug.WriteLine("I AM HEREEEEEEEEEEEEEEEEEEEEEEEE");
+                    JSONObject obj = new JSONObject(3, login);
+                    String data = JsonConvert.SerializeObject(obj);
+                    client.Send(data);
+                    dataReceived = false;
+                    })), null);
+                }
+                catch(Exception e)
+                {
+                    //no connection established
+                    _uiContext.Post(new SendOrPostCallback(new Action<object>(o => {
+                        //get current instance of the login window. needed to display message box inside it
+                        var mainview0 = System.Windows.Application.Current.Windows.OfType<MetroWindow>().FirstOrDefault();
+                        mainview0.ShowMessageAsync("hey", "Unable to connect to the server, please try again later!", MessageDialogStyle.Affirmative);
+                        client.Disconnect();
+                    })), null);
+
+                    return false;
+                }
+                // If data still hasn't been received, wait for sometime
+                while (!SmartOfficeClient.dataReceived || currentAttempts < connectionAttempts)
+                {
+                    System.Threading.Thread.Sleep(500);
+                    currentAttempts++;
+                }
+                //If data has still not been received display server error
+                if(!dataReceived)
+                {
+                    //get current instance of the main window and use it to display error
+                    _uiContext.Post(new SendOrPostCallback(new Action<object>(o => {
+                        //get current instance of the login window. needed to display message box inside it
+                        var mainview0 = System.Windows.Application.Current.Windows.OfType<MetroWindow>().FirstOrDefault();
+                        mainview0.ShowMessageAsync("Oops", "Unable to connect to the server, please try again later!" , MessageDialogStyle.Affirmative);
+                        client.Disconnect();
+                    })), null);
+
+                    return false;
+                }// dataReceived
+                if (allow)
+                    return true;
+                else
+                {
+                    _uiContext.Post(new SendOrPostCallback(new Action<object>(o => {
+                    //get current instance of the login window. needed to display message box inside it
+                        var mainview0 = System.Windows.Application.Current.Windows.OfType<MetroWindow>().FirstOrDefault();
+                        mainview0.ShowMessageAsync("Oops", "Your Login information seems to be incorrect. Please try again", MessageDialogStyle.Affirmative);
+                        client.Disconnect();
+                    })), null);
+                    return false;
+                }
+                */
+            }//end login
+
+        public void disconnect()
+        {
+            client.Disconnect(); 
         }
 
         private void Client_OnClientConnecting(object Sender, ClientConnectingArguments R)
@@ -59,13 +195,90 @@ namespace SmartOfficeMetro
             System.Diagnostics.Debug.WriteLine("Connecting");
         }
 
+        /// <summary>
+        /// Receives data as a JSON packet which is then deserialized to a JSONObject.
+        /// Based on the requestType within the JSONObject, the accompnying object is deserialized to
+        /// the desired object types
+        /// </summary>
+        /// <param name="Sender">usually the server is the sender</param>
+        /// <param name="R">Received JSON packet</param>
         private void Client_OnDataReceived(object Sender, ClientReceivedArguments R)
         {
+            //set boolean to true meaning some data was received and other threads can proceed
+            dataReceived = true;
+            JSONObject ReceivedData = JsonConvert.DeserializeObject<JSONObject>(R.ReceivedData);           
+            
+            //switch case to decide what kind of data was received
+            /// 1: Notifications(Any kind)
+            /// 2: Coffee
+            /// 3: Login request
+            /// 4: Mail(outside or within the office)
+            /// 
+            if(ReceivedData.requestType == 2)
+            {
+                System.Diagnostics.Debug.WriteLine("I WAS IN THE COFFEE ZONE");
+                Coffee_Handler(ReceivedData.info);
+                return;
+            }
+            else if(ReceivedData.requestType == 3)
+            {
+                System.Diagnostics.Debug.WriteLine("I WAS IN THE LOGIN ZONE");
+                Login_Handler(ReceivedData.info);
+                return;
+            }
+            /*
+            switch (ReceivedData.requestType)
+            {
+                case 0:
+                    {
+                        break;
+                    }
+                case 1:
+                    {
+                        break;
+                    }
+                case 2:
+                    {
+                        Coffee_Handler(ReceivedData.info);
+                        break;
+                    }
+                case 3:
+                    {
+                        Login_Handler(ReceivedData.info);
+                        break;
+                    }
+            }
+            */
+            /*
+            if(R.ReceivedData.ToLower() == "true")
+            {
+                allow = true;
+            }
+            else
+            {
+                allow = false;
+            }
+            */
+            /*
             _uiContext.Post(new SendOrPostCallback(new Action<object>(o => {
                 
                 var mainview0 = System.Windows.Application.Current.Windows.OfType<MetroWindow>().FirstOrDefault();
                 mainview0.ShowMessageAsync("Notification", R.ReceivedData, MessageDialogStyle.Affirmative);
              })), null);   
+             */
+        }
+
+        /// <summary>
+        /// Just displays the response sent by the server when user requests for coffee
+        /// </summary>
+        /// <param name="info">Server response</param>
+        private void Coffee_Handler(object info)
+        {
+            main_thread.Post(new SendOrPostCallback(new Action<object>(o => {
+                var mainview0 = System.Windows.Application.Current.Windows.OfType<MetroWindow>().Last();
+                mainview0.ShowMessageAsync("Notification", info.ToString(), MessageDialogStyle.Affirmative);
+            })), null);
+            System.Diagnostics.Debug.WriteLine("I made it past the display stuff");
         }
 
         private void Client_OnClientFileSending(object Sender, ClientFileSendingArguments R)
@@ -101,8 +314,50 @@ namespace SmartOfficeMetro
             }
             return IP4Address;
         }
+        public void Login_Handler(Object login_data)
+        {
+            String json;
+            json = JsonConvert.SerializeObject(login_data);
+            loginObject loginObj = JsonConvert.DeserializeObject<loginObject>(json);
+
+            if (loginObj.loginStatus)
+                allow = true;
+            else
+            {
+                // if login failed, then no need to populate user data
+                allow = false;
+                return;
+            }
+            //if loginStatus was true then start populating user data
+            json = JsonConvert.SerializeObject(loginObj.user);
+            User user_login_object = JsonConvert.DeserializeObject<User>(json);
+            //Get current instance of UserManager and populate all the information in it
+            UserManager user = UserManager.Instance;
+            user.id = user_login_object.id;
+            user.username = user_login_object.username;
+            user.password = user_login_object.password;
+            user.Name = user_login_object.Name;
+            user.phone = user_login_object.phone;
+            user.email = user_login_object.email;
+            user.department = user_login_object.department;
+            user.age = user_login_object.age;
+            user.image = user_login_object.image;
+            user.current_notifications = new Queue<Notification>();
+
+            /*
+            System.Diagnostics.Debug.WriteLine(user.id);
+            System.Diagnostics.Debug.WriteLine(user.Name);
+            System.Diagnostics.Debug.WriteLine(user.phone);
+            System.Diagnostics.Debug.WriteLine(user.email);
+            System.Diagnostics.Debug.WriteLine(user.department);
+            System.Diagnostics.Debug.WriteLine(user.image);
+            System.Diagnostics.Debug.WriteLine(user.age);
+            System.Diagnostics.Debug.WriteLine(user.password);
+            System.Diagnostics.Debug.WriteLine(user.username);
+            */
+        }// Login Handler
 
 
 
-    }
-}
+    }//client
+}//namespace

@@ -15,6 +15,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MahApps.Metro.Controls;
+using SmartOfficeMetro.Model;
+using Newtonsoft.Json;
 
 namespace SmartOfficeMetro
 {
@@ -34,14 +36,15 @@ namespace SmartOfficeMetro
 
         private void orderCoffee(object sender, RoutedEventArgs e)
         {
-           // SmartOfficeClient.sendMessage("Coffee"); 
+            mainWindow = Application.Current.MainWindow as MainWindow;
+            mainWindow.ShowMessageAsync("Coffe comes soon", "da");
         }
 
         private void mailService(object sender, RoutedEventArgs e)
         {
             if (mainWindow == null)
                 mainWindow = Application.Current.MainWindow as MainWindow;
-            mainWindow.showUserControl(new MailService());
+            mainWindow.showUserControl(2);
             
         }
 

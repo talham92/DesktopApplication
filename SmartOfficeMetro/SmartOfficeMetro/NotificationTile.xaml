@@ -4,32 +4,31 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SmartOfficeMetro"
-             mc:Ignorable="d" Height="34.22" Width="392.395">
+             mc:Ignorable="d" Height="30.22" Width="392.395">
     <!-- 34.22 -->
-    <Grid>
+    <Grid x:Name="TileRow">
         <Grid.RowDefinitions>
-            <RowDefinition Height="5*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="120"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="4*"/>
             <ColumnDefinition Width="10*"/>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
 
-        <ScrollViewer x:Name="descriptionPanel" Margin="0,0,-2,0" Grid.ColumnSpan="3" Grid.Column="1" Grid.Row="0" Visibility="Collapsed" >
+        <ScrollViewer x:Name="descriptionPanel" Margin="0,0,-2,0" Grid.ColumnSpan="2" Grid.Column="1" Grid.Row="1" Visibility="Visible" Panel.ZIndex="1" >
             <Grid>
-                <Label x:Name="labelDescription" Content="Test Content" Foreground="White" FontSize="16"/>
-                <Button x:Name="buttonFetch" Content="Fetch Mail" HorizontalAlignment="Left" Margin="10,110,0,0" Grid.Row="1" VerticalAlignment="Top" Width="65" />
+                <Label x:Name="labelDescription" Content="Test Content" Foreground="White" FontSize="16" Panel.ZIndex="1"/>
             </Grid>
         </ScrollViewer>
 
 
 
-        <Label x:Name="labelHeader" Content="Content estttt" Grid.Column="1" Margin="0,0,0,0" FontSize="16" Foreground="White" />
-        <Label x:Name="labelSender" Content="Label" Margin="10,0,0,0" Foreground="White" FontSize="14.667"/>
+        <Label x:Name="labelHeader" Content="Content estttt" Grid.Column="1" Margin="0,0,0,0" FontSize="16" Foreground="White" Panel.ZIndex="1" />
+        <Label x:Name="labelSender" Content="Label" Margin="10,0,0,0" Foreground="White" FontSize="14.667" Panel.ZIndex="1"/>
 
-        <Rectangle x:Name="highligter" Grid.ColumnSpan="3" Height="28" Margin="0,0,-2,0" VerticalAlignment="Top" MouseLeftButtonDown="LabelHeader_MouseLeftButtonDown">
+        <Rectangle x:Name="highligter" Grid.ColumnSpan="3" Height="28" Margin="0,0,-2,0" VerticalAlignment="Top" MouseLeftButtonDown="LabelHeader_MouseLeftButtonDown" Panel.ZIndex="2">
             <Rectangle.Style>
                 <Style TargetType="Rectangle">
 
@@ -43,6 +42,7 @@
                 </Style>
             </Rectangle.Style>
         </Rectangle>
+        <Button x:Name="buttonFetch" Content="Fetch Mail" HorizontalAlignment="Left" Margin="0,0,-16,0" VerticalAlignment="Top" Width="65" Panel.ZIndex="2" Grid.Column="2" />
 
 
     </Grid>

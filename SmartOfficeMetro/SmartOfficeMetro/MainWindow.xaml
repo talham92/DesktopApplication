@@ -64,7 +64,7 @@
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl x:Name="flyoutsControl">
 
-            <Controls:Flyout Header="Inverse"
+            <Controls:Flyout Header="Settings"
                              Position="Right"
                              Theme="Accent">
                 <Grid Margin="10"

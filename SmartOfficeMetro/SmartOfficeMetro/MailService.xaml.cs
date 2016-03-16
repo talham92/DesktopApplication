@@ -66,9 +66,10 @@ namespace SmartOfficeMetro
         {
             // var metroWindow = (_openedViews.First() as MetroWindow);
 
-            var metroWindow = (Application.Current.MainWindow as MetroWindow);
+          //  SmartOfficeClient.sendMessage(4,);
+        //    var metroWindow = (Application.Current.MainWindow as MetroWindow);
 
-            metroWindow.ShowMessageAsync("Thank you!!", "You requested a pickup to Talha Mahmood. The robot is on it's way!", MessageDialogStyle.Affirmative);
+        //    metroWindow.ShowMessageAsync("Thank you!!", "You requested a pickup to Talha Mahmood. The robot is on it's way!", MessageDialogStyle.Affirmative);
 
 
             //window.show

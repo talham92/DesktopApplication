@@ -4,17 +4,36 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Newtonsoft.Json;
 namespace SmartOfficeMetro.Model
 {
+
+    /// <summary>
+    /// Converts an object to a JSON object accompnied with a requestType identifier
+    /// </summary>
     class JSONObject
     {
-    }
-    class Mail
+
+        public int requestType;
+        public Object info;
+
+        /// <summary>
+        /// Converts an object to a JSON object accompnied with a requestType identifier
+        /// </summary>
+        /// <param name="requestType">1: Notification  2 Mail  3 UserLogin </param>
+        /// <param name="information">The data to be passed</param>
+        public JSONObject(int requestType, Object information)
+        {
+            this.requestType = requestType;
+            info = information;
+        }
+    }// JSON object
+
+    public class Mail
     {
-        String mailDestination;
-        String mailTime;
-        String note;
+        public String mailDestination;
+        public String mailTime;
+        public String note;
         public Mail(String mailDestination, String mailTime, String note)
         {
             this.mailDestination = mailDestination;
@@ -23,27 +42,30 @@ namespace SmartOfficeMetro.Model
         }
     }//mail
 
-    class UserLogin
+    //this class is just for JSON object handling. Do not confuse it with the UserManager
+    public class User
     {
+        public String id;
         public String username;
         public String password;
         public String Name;
-        public int age;
-        public Image image;
+        public String age;
+        public String email;
+        public String phone;
+        public String department;
+        public String image;
         public Boolean notification;
 
-        public UserLogin(String username, String password, String Name, Image image)
+        public User(String username, String password)
         {
+
             this.username = username;
             this.password = password;
-            this.Name = Name;
-
-            this.image = image;
             this.notification = false;
         }
     }// user login
 
-    class Notification
+    public class Notification
     {
         public String sender;
         public String subject;
@@ -55,5 +77,30 @@ namespace SmartOfficeMetro.Model
             this.subject = subject;
             this.description = description;
         }
-    }
-}
+    }//notification
+    public class loginObject
+    {
+        public Boolean loginStatus;
+        public User user;
+        public loginObject(Boolean loginStatus, User user)
+        {
+            this.loginStatus = loginStatus;
+            this.user = user;
+        }
+    }//loginObject
+
+    public class Destination
+    {
+        public String destination;
+        public Destination(String destination)
+        {
+            this.destination = destination;
+        }
+        public override String ToString()
+        {
+            return destination;
+        }
+    }// destination
+
+    
+}//namespace
