@@ -1,0 +1,15 @@
+c:\users\raghav\documents\visual studio 2015\Projects\SmartOfficeServer\SmartOfficeServer\bin\Debug\SmartOfficeServer.exe.config
+c:\users\raghav\documents\visual studio 2015\Projects\SmartOfficeServer\SmartOfficeServer\obj\Debug\SmartOfficeServer.csprojResolveAssemblyReference.cache
+c:\users\raghav\documents\visual studio 2015\Projects\SmartOfficeServer\SmartOfficeServer\bin\Debug\SmartOfficeServer.exe
+c:\users\raghav\documents\visual studio 2015\Projects\SmartOfficeServer\SmartOfficeServer\bin\Debug\SmartOfficeServer.pdb
+c:\users\raghav\documents\visual studio 2015\Projects\SmartOfficeServer\SmartOfficeServer\bin\Debug\NetworksApi.dll
+c:\users\raghav\documents\visual studio 2015\Projects\SmartOfficeServer\SmartOfficeServer\obj\Debug\SmartOfficeServer.exe
+c:\users\raghav\documents\visual studio 2015\Projects\SmartOfficeServer\SmartOfficeServer\obj\Debug\SmartOfficeServer.pdb
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\SmartOfficeServer\SmartOfficeServer\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\SmartOfficeServer\SmartOfficeServer\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\SmartOfficeServer\SmartOfficeServer\bin\Debug\EntityFramework.dll
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\SmartOfficeServer\SmartOfficeServer\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\SmartOfficeServer\SmartOfficeServer\bin\Debug\MySql.Data.dll
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\SmartOfficeServer\SmartOfficeServer\bin\Debug\mysql.data.entity.EF6.dll
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\SmartOfficeServer\SmartOfficeServer\bin\Debug\EntityFramework.xml
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\SmartOfficeServer\SmartOfficeServer\bin\Debug\EntityFramework.SqlServer.xml
