@@ -24,10 +24,12 @@ namespace SmartOfficeMetro
     /// </summary>
     public partial class MailService : UserControl
     {
-        String mailDestination;
-        String mailTime;
+        Boolean send_now;
+        Boolean send_to_mail_room;
+        String destination;
+        DateTime pickup_time;
+        String subject;
         String note;
-        MetroWindow mainWindow; //need an instance of the main window to display message
         public MailService()
         {
             DataTable notifications = new DataTable("notification");
@@ -47,26 +49,48 @@ namespace SmartOfficeMetro
             dataGridHistory.DataContext = notifications.DefaultView;
             datePicker.SelectedDate = System.DateTime.Today;
             timePicker.Text = System.DateTime.Today.TimeOfDay.ToString();
+            List<List<String>> user_names = new List<List<string>>();
+            foreach(List<String> users in UserManager.Instance.user_details)
+            {
+                user_names.Add(new List<string> { users.ElementAt(0), users.ElementAt(1) });
+            }
+            comboBoxReciver.ItemsSource = user_names.ElementAt(0).ElementAt(1);
         }
 
         
 
         private void sendNow(object sender, EventArgs e)
         {
+            //toggle between states
             datePicker.IsEnabled = !datePicker.IsEnabled;
             timePicker.IsEnabled = !timePicker.IsEnabled;
+            send_now = !send_now;
         }
 
         private void sendToMailRoom(object sender, EventArgs e)
         {
+            //toggle between states
             comboBoxReciver.IsEnabled = !comboBoxReciver.IsEnabled;
+            send_to_mail_room = !send_to_mail_room;
         }
 
         private void requestPickup(object sender, RoutedEventArgs e)
         {
+            if(send_now)
+            {
+                //request pickup immidiately
+                pickup_time = DateTime.Now;
+            }
+            if(send_to_mail_room)
+            {
+                //send to mail room
+                destination = "mail_room";
+            }
+            Mail mail = new Mail(destination, pickup_time, textBoxSubject.Text, textBoxNote.Text);
+            SmartOfficeClient.sendMessage(5, mail); //5 is server code for mail delivery
             // var metroWindow = (_openedViews.First() as MetroWindow);
-
-          //  SmartOfficeClient.sendMessage(4,);
+            
+         //  SmartOfficeClient.sendMessage()
         //    var metroWindow = (Application.Current.MainWindow as MetroWindow);
 
         //    metroWindow.ShowMessageAsync("Thank you!!", "You requested a pickup to Talha Mahmood. The robot is on it's way!", MessageDialogStyle.Affirmative);

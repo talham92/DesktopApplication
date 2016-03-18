@@ -30,17 +30,20 @@ namespace SmartOfficeMetro
         System.Timers.Timer expand;
         System.Timers.Timer compress;
         SynchronizationContext context = SynchronizationContext.Current;
-        public NotificationTile(String sender, String header, String description)
+        Boolean isFetchEnabled;
+        public NotificationTile(String time, String sender, String header, String description, Boolean isFetchEnabled)
         {
             InitializeComponent();
-
+            //Add notification time 
+            labelTime.MouseLeftButtonDown += LabelHeader_MouseLeftButtonDown;
+            labelTime.Content = time;
             //Add subject description along with click description
             labelHeader.MouseLeftButtonDown += LabelHeader_MouseLeftButtonDown;
             labelHeader.Content = header;
 
             //Add body description to the tile
-            labelDescription.Content = description;
-            labelDescription.MouseLeftButtonDown += LabelHeader_MouseLeftButtonDown;
+            textDescription.Text = description;
+            textDescription.MouseLeftButtonDown += LabelHeader_MouseLeftButtonDown;
 
             //Add sender name and it's assosiated click event
             labelSender.Content = sender;
@@ -49,6 +52,7 @@ namespace SmartOfficeMetro
             descriptionPanel.Visibility = Visibility.Collapsed;
             expanded = false;
 
+        //added these timers for the slide animation
             expand = new System.Timers.Timer();
             expand.Interval = 25;
             expand.Elapsed += T_Elapsed;
@@ -56,6 +60,27 @@ namespace SmartOfficeMetro
             compress = new System.Timers.Timer();
             compress.Interval = 25;
             compress.Elapsed += Compress_Elapsed;
+
+            this.isFetchEnabled = isFetchEnabled;
+        //If the notification is not from the mail room no need for fetch button
+            if(!this.isFetchEnabled)
+            {
+                buttonFetch.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+            //if from mail room then add event handler
+                buttonFetch.Click += ButtonFetch_Click;
+            }
+
+        }
+
+        private void ButtonFetch_Click(object sender, RoutedEventArgs e)
+        {
+        //request for mail from mail room
+            SmartOfficeClient.sendMessage(4, "null");
+       //only allow user to click fetch once to prevent overload
+            buttonFetch.IsEnabled = false;
         }
 
         private void LabelHeader_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -129,6 +154,15 @@ namespace SmartOfficeMetro
             counter++;
             if (counter == 6)
                 expand.Stop();
+        }
+
+        private void descriptionPanel_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            var scrollbar = (ScrollViewer)sender;
+            if(scrollbar.VerticalOffset == scrollbar.ScrollableHeight)
+            {
+                scrollbar.MoveFocus(new TraversalRequest(FocusNavigationDirection.Left));
+            }
         }
     }
 }

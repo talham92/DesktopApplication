@@ -38,12 +38,6 @@
         <Rectangle x:Name="progressBackground" Grid.ColumnSpan="3" Fill="#56FFFFFF" HorizontalAlignment="Left" Height="321" Grid.RowSpan="5" VerticalAlignment="Top" Width="519" Visibility="{Binding isVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
         <Controls:ProgressRing x:Name="inProgress" Grid.Column="1" HorizontalAlignment="Left" Height="60" Margin="43,23,0,0" VerticalAlignment="Top" Width="82" Grid.Row="1" Grid.RowSpan="2" Visibility="{Binding isVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
     
-    
-
-
-
-
-
 
     </Grid>
     

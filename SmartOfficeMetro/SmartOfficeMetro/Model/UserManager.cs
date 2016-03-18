@@ -25,7 +25,9 @@ namespace SmartOfficeMetro.Model
         public String image { get; set; }
         public Boolean notification { get; set; }
        // public List<Notification> current_notifications { get; set; }
-        public Queue<Notification> current_notifications { get; set; }
+        public List<List<String>> current_notifications { get; set; }
+        public List<List<String>> user_details { get; set; }
+        public List<List<String>> delivery_history { get; set; }
         UserManager()
         {
             

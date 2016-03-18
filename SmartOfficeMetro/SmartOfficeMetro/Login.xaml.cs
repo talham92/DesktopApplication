@@ -59,6 +59,7 @@ namespace SmartOfficeMetro
                
                 isVisible = false;
                 DataContext = this;
+                textBoxUsername.Focus();
             }
 
 

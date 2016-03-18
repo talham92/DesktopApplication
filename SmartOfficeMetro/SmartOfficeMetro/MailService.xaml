@@ -37,15 +37,16 @@
                     <Custom:ToggleSwitch Content="Send Now" Margin="0" HorizontalAlignment="Left" VerticalAlignment="Top" IsCheckedChanged="sendNow" Grid.Row="2"/>
                     <Label x:Name="label1" Content="2) Select Receiver of the Mail " HorizontalAlignment="Left" Height="28" Margin="0" VerticalAlignment="Top" FontSize="16" Grid.Row="3" FontWeight="Bold"/>
                     <ComboBox x:Name="comboBoxReciver" HorizontalAlignment="Left" Height="27" Margin="0" VerticalAlignment="Top" IsManipulationEnabled="True" IsEditable="True" Width="150" Grid.Row="4">
-                        <ListBoxItem Content="Item1"/>
-                        <ListBoxItem Content="Item2"/>
-
+                        
                     </ComboBox>
 
                     <Label x:Name="label2" Content="Or" HorizontalAlignment="Left" Height="28" Margin="168,33,0,0" VerticalAlignment="Center" FontSize="16" Grid.Row="3" FontWeight="Bold" Grid.RowSpan="2"/>
                     <Custom:ToggleSwitch Content="Send to Mail Room" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Grid.Row="5" IsCheckedChanged="sendToMailRoom"/>
                     <Custom:ToggleSwitch Content="3) Add Note" Grid.Column="1" HorizontalAlignment="Left" Margin="17,11,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-                    <TextBox x:Name="textBoxNote" Grid.Column="1" HorizontalAlignment="Left" Height="116" Margin="17,16,-89,0" Grid.Row="2" Grid.RowSpan="4" TextWrapping="Wrap" VerticalAlignment="Top" Width="295" SpellCheck.IsEnabled="True" ToolTip="Add a note to your delivery"/>
+                    <TextBox x:Name="textBoxSubject" Grid.Column="1" HorizontalAlignment="Left" Height="30" Margin="17,16,-89,0" Grid.Row="2" Grid.RowSpan="4" TextWrapping="Wrap" VerticalAlignment="Top" Width="295" SpellCheck.IsEnabled="True" ToolTip="Add a Subject to your delivery">
+
+                    </TextBox>
+                    <TextBox x:Name="textBoxNote" Grid.Column="1" HorizontalAlignment="Left" Height="116" Margin="17,16,-89,0" Grid.Row="3" Grid.RowSpan="4" TextWrapping="Wrap" VerticalAlignment="Top" Width="295" SpellCheck.IsEnabled="True" ToolTip="Add a note to your delivery"/>
                     <Button x:Name="buttonSend" Content="Request Pickup" HorizontalAlignment="Left" Margin="7,8,0,0" Grid.Row="6" VerticalAlignment="Top" Click="requestPickup" FontSize="16" FontWeight="Bold"/>
 
 
@@ -53,7 +54,7 @@
             </TabItem>
             <TabItem Header="Delivery History">
                 <Grid>
-                    <DataGrid x:Name="dataGridHistory" HorizontalAlignment="Left" Margin="29,33,0,0" VerticalAlignment="Top" ItemsSource="{Binding}"/>
+                    <DataGrid x:Name="dataGridHistory" Margin="29,33,0,0" VerticalAlignment="Top" ItemsSource="{Binding}" IsReadOnly="True"/>
                 </Grid>
             </TabItem>
 

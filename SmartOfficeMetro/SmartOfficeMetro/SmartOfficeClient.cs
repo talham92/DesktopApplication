@@ -26,6 +26,7 @@ namespace SmartOfficeMetro
         public static Boolean allow;
         public static Boolean dataReceived;
         JSONObject SentData;
+        public static Boolean isConnected;
         //private SmartOfficeClient clientInstance;
         public static SynchronizationContext main_thread;
         int connectionAttempts = 5;
@@ -51,14 +52,24 @@ namespace SmartOfficeMetro
         /// <summary>
         /// Sends data to the server
         /// </summary>
-        /// <param name="requestType"> 1: Notifications(Any kind) 2: Coffee 3: Login request 4: Mail request 5: populate mail service
+        /// <param name="requestType"> 1: Notifications(Any kind) 2: Coffee 3: Login request 4: Mail request 5: delivery request 6: Initial user Data 7: delivery history 8: notification history
         /// </param>
         /// <param name="obj">Desired data</param>
         public static void sendMessage(int requestType, object obj)
         {
             JSONObject SentData = new JSONObject(requestType, obj);
             String message = JsonConvert.SerializeObject(SentData);
-            client.Send(message);
+            try
+            {
+                client.Send(message);
+            }
+            catch(Exception e)  //unable to connect to the client duirng application use// retry
+            {
+                isConnected = false;
+                
+                client.Connect();
+                
+            }
         }
 
         /// <summary>
@@ -206,15 +217,49 @@ namespace SmartOfficeMetro
         {
             //set boolean to true meaning some data was received and other threads can proceed
             dataReceived = true;
-            JSONObject ReceivedData = JsonConvert.DeserializeObject<JSONObject>(R.ReceivedData);           
-            
+            JSONObject ReceivedData = JsonConvert.DeserializeObject<JSONObject>(R.ReceivedData);
+
             //switch case to decide what kind of data was received
-            /// 1: Notifications(Any kind)
-            /// 2: Coffee
-            /// 3: Login request
-            /// 4: Mail(outside or within the office)
-            /// 
-            if(ReceivedData.requestType == 2)
+           /// 1: Notifications(Any kind) 
+           /// 2: Coffee 
+           /// 3: Login request 
+           /// 4: Mail request 
+           /// 5: delivery request 
+           /// 6: Initial user Data 
+           /// 7: delivery history 
+           /// 8: notification history
+
+            
+            switch (ReceivedData.requestType)
+            {
+                case 1:
+                    break;
+                case 2:
+                    Coffee_Handler(ReceivedData.info);
+                    break;
+                case 3:
+                    Login_Handler(ReceivedData.info);
+                    break;
+                case 4:
+                    Mail_Request_Handler(ReceivedData.info);
+                    break;
+                case 5:
+                    Delivery_Request_Handler(ReceivedData.info);
+                    break;
+                case 6:
+                    Initial_User_Data_Handler(ReceivedData.info);
+                    break;
+                case 7:
+                    Delivery_History_Handler(ReceivedData.info);
+                    break;
+                case 8:
+                    Notification_History_Handler(ReceivedData.info);
+                    break;
+            }
+
+            /*
+
+                        if (ReceivedData.requestType == 2)
             {
                 System.Diagnostics.Debug.WriteLine("I WAS IN THE COFFEE ZONE");
                 Coffee_Handler(ReceivedData.info);
@@ -226,30 +271,10 @@ namespace SmartOfficeMetro
                 Login_Handler(ReceivedData.info);
                 return;
             }
-            /*
-            switch (ReceivedData.requestType)
-            {
-                case 0:
-                    {
-                        break;
-                    }
-                case 1:
-                    {
-                        break;
-                    }
-                case 2:
-                    {
-                        Coffee_Handler(ReceivedData.info);
-                        break;
-                    }
-                case 3:
-                    {
-                        Login_Handler(ReceivedData.info);
-                        break;
-                    }
-            }
-            */
-            /*
+
+
+
+
             if(R.ReceivedData.ToLower() == "true")
             {
                 allow = true;
@@ -268,6 +293,42 @@ namespace SmartOfficeMetro
              */
         }
 
+        private void Delivery_Request_Handler(object info)
+        {
+            //User receives a response for his mail. We just need to print it
+            main_thread.Post(new SendOrPostCallback(new Action<object>(o => {
+                var mainview0 = System.Windows.Application.Current.Windows.OfType<MetroWindow>().Last();
+                mainview0.ShowMessageAsync("Notification", info.ToString(), MessageDialogStyle.Affirmative);
+            })), null);
+        }
+
+        private void Mail_Request_Handler(object info)
+        {
+            //User receives a response for his mail. We just need to print it
+            main_thread.Post(new SendOrPostCallback(new Action<object>(o => {
+                var mainview0 = System.Windows.Application.Current.Windows.OfType<MetroWindow>().Last();
+                mainview0.ShowMessageAsync("Notification", info.ToString(), MessageDialogStyle.Affirmative);
+            })), null);
+
+        }
+
+        private void Notification_History_Handler(object info)
+        {
+            UserManager.Instance.current_notifications = JsonConvert.DeserializeObject<List<List<String>>>(info.ToString());
+
+
+        }
+
+        private void Delivery_History_Handler(object info)
+        {
+            UserManager.Instance.delivery_history = JsonConvert.DeserializeObject<List<List<String>>>(info.ToString());
+        }
+
+        private void Initial_User_Data_Handler(object info)
+        {
+            UserManager.Instance.user_details = JsonConvert.DeserializeObject<List<List<String>>>(info.ToString());
+        }
+
         /// <summary>
         /// Just displays the response sent by the server when user requests for coffee
         /// </summary>
@@ -278,7 +339,7 @@ namespace SmartOfficeMetro
                 var mainview0 = System.Windows.Application.Current.Windows.OfType<MetroWindow>().Last();
                 mainview0.ShowMessageAsync("Notification", info.ToString(), MessageDialogStyle.Affirmative);
             })), null);
-            System.Diagnostics.Debug.WriteLine("I made it past the display stuff");
+            System.Diagnostics.Debug.WriteLine("I made it past the display Coffee_handler stuff");
         }
 
         private void Client_OnClientFileSending(object Sender, ClientFileSendingArguments R)
@@ -289,6 +350,15 @@ namespace SmartOfficeMetro
         private void Client_OnClientError(object Sender, ClientErrorArguments R)
         {
             System.Diagnostics.Debug.WriteLine(R.ErrorMessage);
+            isConnected = false;
+            if (main_thread != null)//we're actually using the application and not in the initial login phase
+            { 
+            main_thread.Post(new SendOrPostCallback(new Action<object>(o =>
+            {
+                var mainview0 = System.Windows.Application.Current.Windows.OfType<MetroWindow>().Last();
+                mainview0.ShowMessageAsync("Notification", "Looks like the connection to the server has been lost. Please wait while we try to re-establish it", MessageDialogStyle.Affirmative);
+            })), null);
+            }
         }
 
         private void Client_OnClientDisconnected(object Sender, ClientDisconnectedArguments R)
@@ -299,6 +369,16 @@ namespace SmartOfficeMetro
         private void Client_OnClientConnected(object Sender, ClientConnectedArguments R)
         {
             System.Diagnostics.Debug.WriteLine(R.EventMessage);
+            if(main_thread!=null)//we're actually using the application and not in the initial login phase
+            {
+               
+                    main_thread.Post(new SendOrPostCallback(new Action<object>(o => {
+                        var mainview0 = System.Windows.Application.Current.Windows.OfType<MetroWindow>().Last();
+                        mainview0.ShowMessageAsync("Congratulations!", "We re-established the connection! You may continue to use the application now", MessageDialogStyle.Affirmative);
+                    })), null);
+               
+            }
+            isConnected = true;
         }
 
         public static string GetLocalIPAddress()
@@ -342,7 +422,9 @@ namespace SmartOfficeMetro
             user.department = user_login_object.department;
             user.age = user_login_object.age;
             user.image = user_login_object.image;
-            user.current_notifications = new Queue<Notification>();
+            user.current_notifications = new List<List<string>>();
+            user.delivery_history = new List<List<string>>();
+            user.user_details = new List<List<string>>();
 
             /*
             System.Diagnostics.Debug.WriteLine(user.id);
@@ -354,7 +436,7 @@ namespace SmartOfficeMetro
             System.Diagnostics.Debug.WriteLine(user.age);
             System.Diagnostics.Debug.WriteLine(user.password);
             System.Diagnostics.Debug.WriteLine(user.username);
-            */
+            */ 
         }// Login Handler
 
 

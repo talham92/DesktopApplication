@@ -42,8 +42,7 @@ namespace SmartOfficeMetro
         System.Windows.Forms.NotifyIcon notifyIcon;
         System.Windows.Forms.ContextMenu notifyContextMenu;
         Notifications notification_window = null;
-        MainDelivery main_delivery_window = null;
-        MailService mail_window = null;
+        MailService main_delivery_window = null;
         
 
         public MainWindow()
@@ -108,17 +107,14 @@ namespace SmartOfficeMetro
         {
 
             /// 1: Notification window
-            /// 2: mail service window
-            /// 3: delivery window
-            switch(control_type)
+            /// 2: delivery window
+
+            switch (control_type)
             {
                 case 1:
                     currentControl = notification_window;
                     break;
                 case 2:
-                    currentControl = mail_window;
-                    break;
-                case 3:
                     currentControl = main_delivery_window;
                     break;
             }// switch
@@ -135,7 +131,9 @@ namespace SmartOfficeMetro
 
         private void showNotifications(object sender, RoutedEventArgs e)
         {
+            notification_window.updateUI();
             showUserControl(1);
+
             
         }
 
@@ -145,7 +143,7 @@ namespace SmartOfficeMetro
         }
         private void showMainDelivery(object sender, RoutedEventArgs e)
         {
-            showUserControl(3);
+            showUserControl(2);
             
         }
         public void UpdateUI()
@@ -160,10 +158,18 @@ namespace SmartOfficeMetro
           //  imageUserIcon.DataContext = imgSrc;
             //Set welcome message
             labelWelcome.Content = "Welcome, " + UserManager.Instance.Name + "!";
+//Get initial data from server regarding users, delivery history and notifications
+            SmartOfficeClient.sendMessage(6, "null");
+            SmartOfficeClient.sendMessage(7, "null");
+            SmartOfficeClient.sendMessage(8, "null");
+            notification_window = new Notifications();
+            main_delivery_window = new MailService();
+            
+            
+           // 
+         //   
+            
 
-             notification_window = new Notifications();
-             main_delivery_window = new MainDelivery();
-             mail_window = new MailService();
         }// end UI update
 
 

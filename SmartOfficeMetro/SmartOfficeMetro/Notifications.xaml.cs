@@ -30,15 +30,10 @@ namespace SmartOfficeMetro
         {
             InitializeComponent();
             
-            //populate notifications with dummy data
-            UserManager.Instance.current_notifications.Enqueue(new Notification("Naorin", "Balance Sheet", "Hey!\n I am sending you the current balance sheet, could you please take a look at it? \n\nThanks!"));
-            UserManager.Instance.current_notifications.Enqueue(new Notification("MAIL ROOM", "You have mail in the office", "Hey!\n You have mail in the office. Please press let us know when we can deliver it. \n Regards, \n Poornima"));
-            UserManager.Instance.current_notifications.Enqueue(new Notification("Poornima", "Parts List", "Hey!\n\n I am sending you the parts list, could you please take a look at it? \n\nThanks!"));
-            UserManager.Instance.current_notifications.Enqueue(new Notification("Terrell", "Pen", "Your Pen"));
-            UserManager.Instance.current_notifications.Enqueue(new Notification("Raghav", "Network Update", "network updated"));
-            UserManager.Instance.current_notifications.Enqueue(new Notification("Thinh", "UI Mockup", "Hey!\n\n I am sending you the UI mockup, could you please take a look at it? \n\nThanks!"));
+           
+            
             updateUI();
-
+            
             remove = new System.Timers.Timer();
             remove.Interval = 50;
             remove.Elapsed += Remove_Elapsed;
@@ -83,17 +78,29 @@ namespace SmartOfficeMetro
             if (counter == 6)
                 remove.Stop();
         }
-        private void updateUI()
+        public void updateUI()
         {
-            foreach (Notification notification in UserManager.Instance.current_notifications)
+            //Clear old notifications
+            stackPanelNotifications.Children.Clear();
+            foreach (List<string> notification in UserManager.Instance.current_notifications)
             {
-                NotificationTile tile = new NotificationTile(notification.sender, notification.subject, notification.description);
+                String Name = "";
+                foreach(List<String> user in UserManager.Instance.user_details )
+                {   //match user ID to find name
+                    if(user.ElementAt(0) == notification.ElementAt(2))
+                    {
+                        Name = user.ElementAt(3);
+                        break;
+                    }
+                }
+                NotificationTile tile = new NotificationTile(DateTime.Parse(notification.ElementAt(5)).ToString("MMM d HH:MM"), Name, notification.ElementAt(3), notification.ElementAt(4),notification.ElementAt(2)=="8");
                 tile.HorizontalAlignment = HorizontalAlignment.Stretch;
-                tile.Width = Double.NaN;
+                tile.Width = Double.NaN;        //so tile width becomes auto instead of specefic pixel numbers
                 tile.MouseEnter += Tile_MouseEnter;
                 stackPanelNotifications.Children.Add(tile);
             }
-            UserManager.Instance.current_notifications.Clear();     //Clear current notifications after displaying them
+            
+           // UserManager.Instance.current_notifications.Clear();     //Clear current notifications after displaying them
             stackPanelNotifications.Margin = new Thickness(0);
             
         }

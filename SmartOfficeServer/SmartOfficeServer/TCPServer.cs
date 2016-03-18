@@ -23,7 +23,7 @@ namespace SmartOfficeServer
         private const int COFFEE_REQUEST = 2;
         private const int LOGIN_REQUEST = 3;
         private const int MAIL_REQUEST = 4;
-        private const int BLANK = 5;
+        private const int DELIVERY_REQUEST = 5;
         private const int INITIAL_USER_DATA = 6;
         private const int DELIVERY_HISTORY = 7;
         private const int NOTIFICATION_HISTORY = 8;
@@ -38,6 +38,7 @@ namespace SmartOfficeServer
             Init.intializeDatabase();
             Console.WriteLine("Ending Initialization...... \nServer setup fully \n==================================");
 
+            /*
             List<List<String>> data = new List<List<string>>();
             String name = "raghav";
             
@@ -48,19 +49,23 @@ namespace SmartOfficeServer
 
             data = Init.MySQlConnection.SelectAll("user", "*", "true");
 
-            foreach (List<String> list in data)
-            {
-                foreach(string d in list)
-                {
-                    Console.Write(d + "   ");
-                }
-                Console.WriteLine("");
-            }
+           
             //Now we just need to serialize this chunk of data into a JSON object and pass it on to the client
-            //JSONObject obj = new JSONObject(DELIVERY_HISTORY, data);
-           // return JsonConvert.SerializeObject(obj);
+            JSONObject obj = new JSONObject(DELIVERY_HISTORY, data);
+            String jasonString =  JsonConvert.SerializeObject(obj);
 
+            JSONObject obj2 = JsonConvert.DeserializeObject<JSONObject>(jasonString);
+            List<List<String>> jsonList = JsonConvert.DeserializeObject<List<List<String>>>(obj2.info.ToString());
 
+            foreach(List<String> list in jsonList)
+            {
+                foreach(String d in list)
+                {
+                    Console.Write(d + "  ");
+                }
+                Console.WriteLine();
+            }
+            */
 
             Console.WriteLine("Press enter to close...");
             Console.ReadLine();
@@ -104,14 +109,14 @@ namespace SmartOfficeServer
         /// Executed when the server receives data from a client. based on requestType executes different method stubs
         /// </summary>
         /// <param name="requestType"> 
-        /// 1: Notifications(Any kind) 2: Coffee 3: Login request 4: Mail request 5: populate mail service 6: Initial user Data 7: delivery history 8: notification history
+        /// 1: Notifications(Any kind) 2: Coffee 3: Login request 4: Mail request 5: delivery request 6: Initial user Data 7: delivery history 8: notification history
         /// </param>
         /// <param name="obj">Desired data</param>
         private void Server_OnDataReceived(object Sender, ReceivedArguments R)
         {
             String response = "";
             Console.WriteLine("I got data from " + R.Name);
-            Console.WriteLine(R.ReceivedData.ToString());
+         //   Console.WriteLine(R.ReceivedData.ToString());
             obj = JsonConvert.DeserializeObject<JSONObject>(R.ReceivedData);
             //differentiate data based on the type of request received
             switch(obj.requestType)
@@ -120,33 +125,69 @@ namespace SmartOfficeServer
                     break;
                 case 2:
                     Console.WriteLine(System.DateTime.Now + ": Coffee delivery requested by " + R.Name);
-                    response = Coffee_Handler(obj.info);
+                    response = Coffee_Handler(R.Name);
+                    Console.WriteLine(System.DateTime.Now + ": Coffee delivery response by " + R.Name + " delivered\n");
                     break;
                 case 3:
                     //convert login string to object and pass it to login method to verify
                     Console.WriteLine(System.DateTime.Now + ": Trying to login " + R.Name);
                     response = Login_Handler(obj.info);
+                    Console.WriteLine(System.DateTime.Now + ": Login attempt complete for " + R.Name + "\n");
                     break;
                 case 4:
+                    Console.WriteLine(System.DateTime.Now + ": " + R.Name + " is requesting their mail from mail room");
+                    response = Mail_Request_Handler(R.Name);
+                    Console.WriteLine(System.DateTime.Now + ": Mail dispatched for " + R.Name + "\n");
                     break;
                 case 5:
+                    Console.WriteLine(System.DateTime.Now + ": " + R.Name + " is requesting for mail delivery");
+                    response = Delivery_Request_Handler(R.Name);
+                    Console.WriteLine(System.DateTime.Now + ": Robot dispatched for " + R.Name + " for mail delivery\n");
                     break;
                 case 6:
                     Console.WriteLine(System.DateTime.Now + ": Initial user data requested by " + R.Name);
                     response = Initial_user_data_handler(R.Name);
+                    Console.WriteLine(System.DateTime.Now + ": Initial user data requested by " + R.Name + " has been dispatched\n");
                     break;
                 case 7:
-                    Console.WriteLine(System.DateTime.Now + ": " + R.Name + "is requesting their delivery history");
+                    Console.WriteLine(System.DateTime.Now + ": " + R.Name + " is requesting their delivery history");
                     response = Delivery_History_Handler(R.Name);
+                    Console.WriteLine(System.DateTime.Now + ": delivery history data requested by " + R.Name + " has been dispatched\n");
                     break;
                 case 8:
-                    Console.WriteLine(System.DateTime.Now + ": " + R.Name + "is requesting their notification history");
+                    Console.WriteLine(System.DateTime.Now + ": " + R.Name + " is requesting their notification history");
                     response = Notification_History_Handler(R.Name);
+                    Console.WriteLine(System.DateTime.Now + ": notification history data requested by " + R.Name + " has been dispatched\n");
                     break;
                     
             }//switch
-            server.SendTo(R.Name, response);
+            try
+            {
+                server.SendTo(R.Name, response);
+            }
+            catch(Exception e)
+            {
+                //occurs when server looses connection with client;
+                //for future=> try sending the data after connection is regained. would need the server to keep some sort of record
+                // for this
+            }
 
+        }
+
+        private string Delivery_Request_Handler(string name)
+        {
+            //Unity data here
+
+
+            return JsonConvert.SerializeObject(new JSONObject(DELIVERY_REQUEST, "A rebot will arrive for pickup soon!"));
+
+        }
+
+        private String Mail_Request_Handler(string name)
+        {
+            //Unity data here
+
+            return JsonConvert.SerializeObject(new JSONObject(MAIL_REQUEST, "A rebot will deliver you your mail soon!"));
         }
 
         private String Notification_History_Handler(string name)
@@ -243,9 +284,9 @@ namespace SmartOfficeServer
 
         }//end login
 
-        private String Coffee_Handler(object info)
+        private String Coffee_Handler(string name)
         {
-            String destination = info.ToString();
+            
         //Send data to unity
 
         //Unity

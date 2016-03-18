@@ -20,7 +20,7 @@ namespace SmartOfficeMetro.Model
         /// <summary>
         /// Converts an object to a JSON object accompnied with a requestType identifier
         /// </summary>
-        /// <param name="requestType">1: Notification  2 Mail  3 UserLogin </param>
+        /// <param name="requestType">1: Notifications(Any kind) 2: Coffee 3: Login request 4: Mail request 5: BLANK </param>
         /// <param name="information">The data to be passed</param>
         public JSONObject(int requestType, Object information)
         {
@@ -32,12 +32,14 @@ namespace SmartOfficeMetro.Model
     public class Mail
     {
         public String mailDestination;
-        public String mailTime;
+        public DateTime mailTime;
+        public String subject;
         public String note;
-        public Mail(String mailDestination, String mailTime, String note)
+        public Mail(String mailDestination, DateTime mailTime, String subject, String note)
         {
             this.mailDestination = mailDestination;
             this.mailTime = mailTime;
+            this.subject = subject;
             this.note = note;
         }
     }//mail
