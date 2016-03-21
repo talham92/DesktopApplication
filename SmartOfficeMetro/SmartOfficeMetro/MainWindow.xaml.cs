@@ -43,12 +43,12 @@ namespace SmartOfficeMetro
         System.Windows.Forms.ContextMenu notifyContextMenu;
         Notifications notification_window = null;
         MailService main_delivery_window = null;
-        
+        AdminFunctions admin_window = null;
 
         public MainWindow()
         {
             UserManager.Instance.Name = "";
-            UserManager.Instance.image = "kitten-2.jpg";
+           // UserManager.Instance.image = "kitten-2.jpg";
            // this.Hide();
            // Login login_window = new Login(this,SynchronizationContext.Current);
          //   login_window.Show();
@@ -117,6 +117,9 @@ namespace SmartOfficeMetro
                 case 2:
                     currentControl = main_delivery_window;
                     break;
+                case 3:
+                    currentControl = admin_window;
+                    break;
             }// switch
 
         //Init User control dimensions 
@@ -143,19 +146,25 @@ namespace SmartOfficeMetro
         }
         private void showMainDelivery(object sender, RoutedEventArgs e)
         {
+            main_delivery_window.Update_Delivery_History();
             showUserControl(2);
             
+        }
+        private void buttonAdmin_Click(object sender, RoutedEventArgs e)
+        {
+            admin_window.Update_UI();
+            showUserControl(3);
         }
         public void UpdateUI()
         {
             //set image
-           // BitmapImage logo = new BitmapImage();
-           // logo.BeginInit();
-           // logo.UriSource = new Uri("pack://application:,,,/SmartOfficeMetro;component/../../UserImages/" + UserManager.Instance.image);
-           // logo.EndInit();
-         //   imageUserIcon.Source = logo;
+            BitmapImage logo = new BitmapImage();
+            logo.BeginInit();
+            logo.UriSource = new Uri("pack://application:,,,/SmartOfficeMetro;component/../../UserImages/" + UserManager.Instance.image);
+            logo.EndInit();
+            imageUserIcon.Source = logo;
 
-          //  imageUserIcon.DataContext = imgSrc;
+            imageUserIcon.DataContext = imgSrc;
             //Set welcome message
             labelWelcome.Content = "Welcome, " + UserManager.Instance.Name + "!";
 //Get initial data from server regarding users, delivery history and notifications
@@ -164,12 +173,17 @@ namespace SmartOfficeMetro
             SmartOfficeClient.sendMessage(8, "null");
             notification_window = new Notifications();
             main_delivery_window = new MailService();
-            
-            
-           // 
-         //   
-            
+//Check to see if user is admin. If yes, add admin features, otherwise ignore them
+            if(UserManager.Instance.department.ToLower() =="admin")
+            {
+                AdminManager.Instance.robot_list = new List<Robot>();
 
+                //display the admin button
+                buttonAdmin.Visibility = Visibility.Visible;
+                //create admin window here
+                admin_window = new AdminFunctions();
+                
+            }
         }// end UI update
 
 
@@ -258,7 +272,7 @@ namespace SmartOfficeMetro
             }
         } //state changed
 
-        
+
     } // main window
    
 }// namespace

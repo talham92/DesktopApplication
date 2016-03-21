@@ -20,7 +20,7 @@ namespace SmartOfficeServer.Model
         /// <summary>
         /// Converts an object to a JSON object accompnied with a requestType identifier
         /// </summary>
-        /// <param name="requestType">1: Notifications(Any kind) 2: Coffee 3: Login request 4: Mail request 5: BLANK 6: Initial user Data 7: delivery history 8: notification history </param>
+        /// <param name="requestType">1: Notifications(Any kind) 2: Coffee 3: Login request 4: Mail request 5: Delivery request 6: Initial user Data 7: delivery history 8: notification history 9: robot status</param>
         /// <param name="information">The data to be passed</param>
         public JSONObject(int requestType, Object information)
         {
@@ -29,15 +29,17 @@ namespace SmartOfficeServer.Model
         }
     }// JSON object
 
-    class Mail
+    public class Mail
     {
-        String mailDestination;
-        String mailTime;
-        String note;
-        public Mail(String mailDestination, String mailTime, String note)
+        public String mailDestination;
+        public DateTime mailTime;
+        public String subject;
+        public String note;
+        public Mail(String mailDestination, DateTime mailTime, String subject, String note)
         {
             this.mailDestination = mailDestination;
             this.mailTime = mailTime;
+            this.subject = subject;
             this.note = note;
         }
     }//mail
@@ -100,7 +102,7 @@ namespace SmartOfficeServer.Model
             return destination;
         }
     }// destination
-
+/*
     public class Initial_data
     {
         List<List<String>> users;
@@ -112,5 +114,17 @@ namespace SmartOfficeServer.Model
             this.delivery = delivery;
             this.notification = notification;
         }
-    }
+    }//end ini
+*/
+    public class Robot
+    {
+        public String id;
+        public Double battery_level;
+
+        public Robot(String id, Double battery_level)
+        {
+            this.id = id;
+            this.battery_level = battery_level;
+        }
+    }//robot
 }

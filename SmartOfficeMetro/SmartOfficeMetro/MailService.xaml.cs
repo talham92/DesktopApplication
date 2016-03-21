@@ -17,6 +17,7 @@ using SmartOfficeMetro.Model;
 using MahApps.Metro.Controls.Dialogs;
 using System.Data;
 
+
 namespace SmartOfficeMetro
 {
     /// <summary>
@@ -30,23 +31,23 @@ namespace SmartOfficeMetro
         DateTime pickup_time;
         String subject;
         String note;
+        DataTable delivery_history = null;
         public MailService()
         {
-            DataTable notifications = new DataTable("notification");
-            notifications.Columns.Add("Recipient", typeof(String));
-            notifications.Columns.Add("Date", typeof(String));
-            notifications.Columns.Add("Time Delivered", typeof(String));
-            notifications.Columns.Add("Note", typeof(String));
-            notifications.Columns.Add("Status", typeof(String));
-
-            notifications.Rows.Add(new Object[] { "Naorin", "March 13, 2016", "1:00:00 PM", "Please sign the promotion letter", "Delivered" });
-            notifications.Rows.Add(new Object[] { "Thinh", "March 13, 2016", "1:50:00 PM", "Rough UI draft" });
-            notifications.Rows.Add(new Object[] { "Poornima", "March 13, 2016", "3:00:00 PM", "Proposal for data mapping", "Delivered" });
-            notifications.Rows.Add(new Object[] { "Terrell", "March 13, 2016", "3:10:00 PM", "Your pen", "Delivered" });
-            notifications.Rows.Add(new Object[] { "Raghav", "March 13, 2016", "4:00:00 PM", "Appraisal form", "Delivered" });
             InitializeComponent();
 
-            dataGridHistory.DataContext = notifications.DefaultView;
+
+            delivery_history = new DataTable("delivery_history");
+            delivery_history.Columns.Add("Delivery ID", typeof(String));
+            delivery_history.Columns.Add("Reciver", typeof(String));
+            delivery_history.Columns.Add("Time Delivered", typeof(String));
+            delivery_history.Columns.Add("Status", typeof(String));
+            
+            Delivery_History_Tab.MouseLeftButtonDown += Delivery_History_Tab_MouseLeftButtonDown;
+            dataGridHistory.DataContext = delivery_history.DefaultView;
+            dataGridHistory.ColumnWidth = DataGridLength.Auto;
+            
+
             datePicker.SelectedDate = System.DateTime.Today;
             timePicker.Text = System.DateTime.Today.TimeOfDay.ToString();
             List<List<String>> user_names = new List<List<string>>();
@@ -54,9 +55,40 @@ namespace SmartOfficeMetro
             {
                 user_names.Add(new List<string> { users.ElementAt(0), users.ElementAt(1) });
             }
-            comboBoxReciver.ItemsSource = user_names.ElementAt(0).ElementAt(1);
+            comboBoxReciver.ItemsSource = new Func<List<String>>(() => { List<String> dummy = new List<string>(); foreach (List<String> user in UserManager.Instance.user_details) { dummy.Add(user.ElementAt(1)); } return dummy; })();
         }
 
+        private void Delivery_History_Tab_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Update_Delivery_History();
+        }
+
+        public void Update_Delivery_History()
+        {
+            delivery_history.Rows.Clear(); //clear old data
+            String reciver = "";
+            String status = "";
+            foreach(List<String> row in UserManager.Instance.delivery_history)
+            {
+                foreach (List<String> user in UserManager.Instance.user_details)
+                {   //match user ID to find name
+                    if (user.ElementAt(0) == row.ElementAt(1))
+                    {
+                        reciver = user.ElementAt(3);
+                        break;//get reciver name from his/her ID
+                    }
+                }//foreach
+                if(row.ElementAt(5) =="1")
+                {
+                    status = "Delivered";
+                }
+
+                
+                delivery_history.Rows.Add(new object[] { row.ElementAt(0), reciver, row.ElementAt(4), status });
+                //row.ElementAt(0),reciver,row.ElementAt(5),row.ElementAt(6)
+                System.Diagnostics.Debug.WriteLine("I updated delivery rows!");
+            }
+        }
         
 
         private void sendNow(object sender, EventArgs e)
@@ -81,13 +113,33 @@ namespace SmartOfficeMetro
                 //request pickup immidiately
                 pickup_time = DateTime.Now;
             }
+            else
+            {
+                pickup_time = DateTime.Parse(datePicker.Text + " " + timePicker.Text);
+            }
             if(send_to_mail_room)
             {
                 //send to mail room
                 destination = "mail_room";
             }
+            else
+            {
+                destination = comboBoxReciver.Text;
+            }
+            
             Mail mail = new Mail(destination, pickup_time, textBoxSubject.Text, textBoxNote.Text);
             SmartOfficeClient.sendMessage(5, mail); //5 is server code for mail delivery
+
+
+
+
+
+
+
+
+
+
+
             // var metroWindow = (_openedViews.First() as MetroWindow);
             
          //  SmartOfficeClient.sendMessage()

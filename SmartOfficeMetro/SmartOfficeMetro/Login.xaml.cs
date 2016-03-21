@@ -184,8 +184,8 @@ namespace SmartOfficeMetro
                 allowLogin = true;
                 _uiContext.Post(new SendOrPostCallback(new Action<object>(o =>
                 {
-                    mainDisplay.Show();
                     mainDisplay.UpdateUI();
+                    mainDisplay.Show();
                     this.Close();
                 })), null);
             }

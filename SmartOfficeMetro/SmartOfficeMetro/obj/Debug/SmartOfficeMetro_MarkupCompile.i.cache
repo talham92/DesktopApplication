@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\SmartOfficeMetro\SmartOfficeMetro\App.xaml
-7927363370
+9614423773
 
-21940729787
+241919226124
 261779468633
-Login.xaml;MainDelivery.xaml;MainWindow.xaml;MailService.xaml;Notifications.xaml;NotificationTile.xaml;Resources\Icons.xaml;
-
-False
+AdminFunctions.xaml;Login.xaml;MainDelivery.xaml;MainWindow.xaml;MailService.xaml;Notifications.xaml;NotificationTile.xaml;Resources\Icons.xaml;Tile_Battery_Info.xaml;
+resources\test_splash.png
+True
 

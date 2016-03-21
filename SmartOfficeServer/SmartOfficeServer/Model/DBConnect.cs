@@ -9,7 +9,7 @@ namespace SmartOfficeServer.Model
     class DBConnect
     {
         private MySqlConnection connection = null;
-        private MySqlDataReader reader = null;
+        //private MySqlDataReader reader = null;
         private String server;
         private String port;
         private String username;
@@ -73,28 +73,18 @@ namespace SmartOfficeServer.Model
         }//close connection
 
         //Insert statement
-        public Boolean Insert(String tablename, List<String> args)
+        public Boolean Insert(String tablename, String columns,List<String> args)
         {
-            String query = "";
-            switch(tablename.ToLower())
+            String query = "Insert into " + tablename + " (" + columns + ") values (";
+            query += string.Join(",", args);
+            /*foreach(String value in args)
             {
-                case "user":
-                    query = "Insert into user values("; 
-                    foreach(String value in args)
-                    {
-                        query += value + ",";
-                    }
-                    query += ");";
-                    break;
-                case "delivery":
-                    query = "Insert into delivery values(";
-                    foreach (String value in args)
-                    {
-                        query += value + ",";
-                    }
-                    query += ");";
-                    break;
-            }//switch
+                //query += value + ",";
+                query.Join(",", value);
+            }*/
+            query += ");";
+            Console.WriteLine(query);
+                    
             try
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
@@ -179,7 +169,7 @@ namespace SmartOfficeServer.Model
             List<List<String>> returnData = new List<List<String>>();
             List<String> row = null;
             query = "Select " + columns + " from " + tablename + " where " + condition + ";";
-
+            MySqlDataReader reader;
             try
             {
                 //create and execute command

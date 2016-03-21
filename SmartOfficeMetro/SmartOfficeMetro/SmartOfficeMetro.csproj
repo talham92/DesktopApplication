@@ -24,7 +24,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -130,9 +130,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AdminFunctions.xaml.cs">
+      <DependentUpon>AdminFunctions.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MailService.xaml.cs">
       <DependentUpon>MailService.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Model\AdminManager.cs" />
     <Compile Include="Model\JSONObject.cs" />
     <Compile Include="Model\UserManager.cs" />
     <Compile Include="Notifications.xaml.cs">
@@ -148,7 +152,14 @@
       <DependentUpon>MainDelivery.xaml</DependentUpon>
     </Compile>
     <Compile Include="TcpClientTest.cs" />
+    <Compile Include="Tile_Battery_Info.xaml.cs">
+      <DependentUpon>Tile_Battery_Info.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModel.cs" />
+    <Page Include="AdminFunctions.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Login.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -187,6 +198,10 @@
     <Page Include="Resources\Icons.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Tile_Battery_Info.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -268,6 +283,20 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UserImages\avatar1.png" />
+    <Resource Include="UserImages\avatar2.png" />
+    <Resource Include="UserImages\avatar3.png" />
+    <Resource Include="UserImages\avatar4.png" />
+    <Resource Include="UserImages\avatar5.png" />
+    <Resource Include="UserImages\avatar6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UserImages\Contacts-96.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <SplashScreen Include="Resources\test_splash.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

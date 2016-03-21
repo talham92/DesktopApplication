@@ -52,7 +52,7 @@ namespace SmartOfficeMetro
         /// <summary>
         /// Sends data to the server
         /// </summary>
-        /// <param name="requestType"> 1: Notifications(Any kind) 2: Coffee 3: Login request 4: Mail request 5: delivery request 6: Initial user Data 7: delivery history 8: notification history
+        /// <param name="requestType"> 1: Notifications(Any kind) 2: Coffee 3: Login request 4: Mail request 5: delivery request 6: Initial user Data 7: delivery history 8: notification history 9:robot battery status 10: recall robot 11: Disconnect user
         /// </param>
         /// <param name="obj">Desired data</param>
         public static void sendMessage(int requestType, object obj)
@@ -65,10 +65,8 @@ namespace SmartOfficeMetro
             }
             catch(Exception e)  //unable to connect to the client duirng application use// retry
             {
-                isConnected = false;
-                
+                isConnected = false;     
                 client.Connect();
-                
             }
         }
 
@@ -126,7 +124,7 @@ namespace SmartOfficeMetro
             
 
             if (allow)
-                return true;
+                return true;    //client sucessfully logged in
             else
             {
                 _uiContext.Post(new SendOrPostCallback(new Action<object>(o =>
@@ -137,64 +135,9 @@ namespace SmartOfficeMetro
                     client.Disconnect();
                 })), null);
                 return false;
-            }
+            }//else
 
-                /*
-                try
-                {
-                    _uiContext.Post(new SendOrPostCallback(new Action<object>(o => {
-                    System.Diagnostics.Debug.WriteLine("I AM HEREEEEEEEEEEEEEEEEEEEEEEEE");
-                    JSONObject obj = new JSONObject(3, login);
-                    String data = JsonConvert.SerializeObject(obj);
-                    client.Send(data);
-                    dataReceived = false;
-                    })), null);
-                }
-                catch(Exception e)
-                {
-                    //no connection established
-                    _uiContext.Post(new SendOrPostCallback(new Action<object>(o => {
-                        //get current instance of the login window. needed to display message box inside it
-                        var mainview0 = System.Windows.Application.Current.Windows.OfType<MetroWindow>().FirstOrDefault();
-                        mainview0.ShowMessageAsync("hey", "Unable to connect to the server, please try again later!", MessageDialogStyle.Affirmative);
-                        client.Disconnect();
-                    })), null);
-
-                    return false;
-                }
-                // If data still hasn't been received, wait for sometime
-                while (!SmartOfficeClient.dataReceived || currentAttempts < connectionAttempts)
-                {
-                    System.Threading.Thread.Sleep(500);
-                    currentAttempts++;
-                }
-                //If data has still not been received display server error
-                if(!dataReceived)
-                {
-                    //get current instance of the main window and use it to display error
-                    _uiContext.Post(new SendOrPostCallback(new Action<object>(o => {
-                        //get current instance of the login window. needed to display message box inside it
-                        var mainview0 = System.Windows.Application.Current.Windows.OfType<MetroWindow>().FirstOrDefault();
-                        mainview0.ShowMessageAsync("Oops", "Unable to connect to the server, please try again later!" , MessageDialogStyle.Affirmative);
-                        client.Disconnect();
-                    })), null);
-
-                    return false;
-                }// dataReceived
-                if (allow)
-                    return true;
-                else
-                {
-                    _uiContext.Post(new SendOrPostCallback(new Action<object>(o => {
-                    //get current instance of the login window. needed to display message box inside it
-                        var mainview0 = System.Windows.Application.Current.Windows.OfType<MetroWindow>().FirstOrDefault();
-                        mainview0.ShowMessageAsync("Oops", "Your Login information seems to be incorrect. Please try again", MessageDialogStyle.Affirmative);
-                        client.Disconnect();
-                    })), null);
-                    return false;
-                }
-                */
-            }//end login
+        }//end login
 
         public void disconnect()
         {
@@ -217,6 +160,7 @@ namespace SmartOfficeMetro
         {
             //set boolean to true meaning some data was received and other threads can proceed
             dataReceived = true;
+           // System.Diagnostics.Debug.WriteLine(R.ReceivedData);
             JSONObject ReceivedData = JsonConvert.DeserializeObject<JSONObject>(R.ReceivedData);
 
             //switch case to decide what kind of data was received
@@ -228,11 +172,14 @@ namespace SmartOfficeMetro
            /// 6: Initial user Data 
            /// 7: delivery history 
            /// 8: notification history
+           /// 9: robot status
+           /// 10: recall robot
 
             
             switch (ReceivedData.requestType)
             {
                 case 1:
+                    Notification_Handler(ReceivedData.info);
                     break;
                 case 2:
                     Coffee_Handler(ReceivedData.info);
@@ -255,43 +202,60 @@ namespace SmartOfficeMetro
                 case 8:
                     Notification_History_Handler(ReceivedData.info);
                     break;
-            }
+                case 9:
+                    Admin_Data_Handler(ReceivedData.info);
+                    break;
+                case 10:
+                    Recall_Robot_Handler(ReceivedData.info);
+                    break;
+            }//switch
 
-            /*
+        }//on data received client
 
-                        if (ReceivedData.requestType == 2)
-            {
-                System.Diagnostics.Debug.WriteLine("I WAS IN THE COFFEE ZONE");
-                Coffee_Handler(ReceivedData.info);
-                return;
-            }
-            else if(ReceivedData.requestType == 3)
-            {
-                System.Diagnostics.Debug.WriteLine("I WAS IN THE LOGIN ZONE");
-                Login_Handler(ReceivedData.info);
-                return;
-            }
-
-
-
-
-            if(R.ReceivedData.ToLower() == "true")
-            {
-                allow = true;
-            }
-            else
-            {
-                allow = false;
-            }
-            */
-            /*
-            _uiContext.Post(new SendOrPostCallback(new Action<object>(o => {
-                
-                var mainview0 = System.Windows.Application.Current.Windows.OfType<MetroWindow>().FirstOrDefault();
-                mainview0.ShowMessageAsync("Notification", R.ReceivedData, MessageDialogStyle.Affirmative);
-             })), null);   
-             */
+        private void Recall_Robot_Handler(object info)
+        {
+            main_thread.Post(new SendOrPostCallback(new Action<object>(o => {
+                var mainview0 = System.Windows.Application.Current.Windows.OfType<MetroWindow>().Last();
+                mainview0.ShowMessageAsync("Notification", info.ToString(), MessageDialogStyle.Affirmative);
+            })), null);
         }
+
+        private void Notification_Handler(object info)
+        {
+            UserManager.Instance.current_notifications.Add(info as List<String>);
+        }
+
+        private void Admin_Data_Handler(object info)
+        {
+            // This is where the robots battery status will be recorded
+            try
+            {
+                List<List<String>> robots = JsonConvert.DeserializeObject<List<List<String>>>(info.ToString());
+                List<Robot> robot_list = new List<Robot>();
+                foreach (List<string> robot in robots)
+                {
+                    robot_list.Add(new Robot(robot.ElementAt(0), Double.Parse(robot.ElementAt(1))));
+                }
+                AdminManager.Instance.robot_list = robot_list;
+                //maybe call a function to update UI here or can update upon load too
+            }
+            catch (Exception ex)
+            {
+                /// 2 reasons this catch can occuer:
+                /// #1: sometimes the server data gets lost and null values are passed. in that case we simply ignore
+                ///     that data packet
+                /// #2: the data sent was a list of logged in users and could not be parsed into a robot object.
+                ///     In this case we parse it to the logged in users list
+                try
+                {
+                    AdminManager.Instance.logged_in_users = JsonConvert.DeserializeObject<List<String>>(info.ToString());
+                }
+                catch(Exception e)
+                {
+                    //if the data was actually sent as null then we ignore it
+                }//catch
+            }//catch
+        }//admin data
 
         private void Delivery_Request_Handler(object info)
         {
@@ -355,8 +319,12 @@ namespace SmartOfficeMetro
             { 
             main_thread.Post(new SendOrPostCallback(new Action<object>(o =>
             {
-                var mainview0 = System.Windows.Application.Current.Windows.OfType<MetroWindow>().Last();
-                mainview0.ShowMessageAsync("Notification", "Looks like the connection to the server has been lost. Please wait while we try to re-establish it", MessageDialogStyle.Affirmative);
+                try
+                {
+                    var mainview0 = System.Windows.Application.Current.Windows.OfType<MetroWindow>().Last();
+                    mainview0.ShowMessageAsync("Notification", "Looks like the connection to the server has been lost. Please wait while we try to re-establish it", MessageDialogStyle.Affirmative);
+                }
+                catch(NullReferenceException e) { }
             })), null);
             }
         }
@@ -373,8 +341,12 @@ namespace SmartOfficeMetro
             {
                
                     main_thread.Post(new SendOrPostCallback(new Action<object>(o => {
-                        var mainview0 = System.Windows.Application.Current.Windows.OfType<MetroWindow>().Last();
-                        mainview0.ShowMessageAsync("Congratulations!", "We re-established the connection! You may continue to use the application now", MessageDialogStyle.Affirmative);
+                        try
+                        {
+                            var mainview0 = System.Windows.Application.Current.Windows.OfType<MetroWindow>().Last();
+                            mainview0.ShowMessageAsync("Congratulations!", "We re-established the connection! You may continue to use the application now", MessageDialogStyle.Affirmative);
+                        }
+                        catch(NullReferenceException e) { }
                     })), null);
                
             }

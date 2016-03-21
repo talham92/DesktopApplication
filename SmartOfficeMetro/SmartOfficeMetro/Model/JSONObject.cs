@@ -104,5 +104,17 @@ namespace SmartOfficeMetro.Model
         }
     }// destination
 
-    
+    public class Robot
+    {
+        public String id;
+        public Double battery_level;
+
+        public Robot(String id, Double battery_level)
+        {
+            this.id = id;
+            this.battery_level = battery_level;
+        }
+    }//robot
+
+
 }//namespace

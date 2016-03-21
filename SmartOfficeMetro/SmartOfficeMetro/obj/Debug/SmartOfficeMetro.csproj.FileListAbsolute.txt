@@ -105,3 +105,7 @@ C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\SmartOf
 C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\SmartOfficeMetro\SmartOfficeMetro\obj\Debug\SmartOfficeMetro.application
 C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\SmartOfficeMetro\SmartOfficeMetro\obj\Debug\SmartOfficeMetro.exe
 C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\SmartOfficeMetro\SmartOfficeMetro\obj\Debug\SmartOfficeMetro.pdb
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\SmartOfficeMetro\SmartOfficeMetro\obj\Debug\AdminFunctions.g.cs
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\SmartOfficeMetro\SmartOfficeMetro\obj\Debug\AdminFunctions.baml
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\SmartOfficeMetro\SmartOfficeMetro\obj\Debug\Tile_Battery_Info.g.cs
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\SmartOfficeMetro\SmartOfficeMetro\obj\Debug\Tile_Battery_Info.baml

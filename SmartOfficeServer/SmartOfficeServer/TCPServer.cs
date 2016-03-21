@@ -18,7 +18,13 @@ namespace SmartOfficeServer
         const string port = "8888";
         JSONObject obj;
         DBConnect MySQlConnection;
-        //1: Notifications(Any kind) 2: Coffee 3: Login request 4: Mail request 5: BLANK 6: Initial user Data 7: delivery history 8: notification history
+        List<List<String>> users = new List<List<string>>();
+        List<List<String>> admins = new List<List<String>>();
+        List<List<String>> robot_status = null;
+        List<String> logged_in_users = new List<string>();
+        System.Timers.Timer admin_data_timer = new System.Timers.Timer(10000);
+        private const string unity_client = "unity";
+        //1: Notifications(Any kind) 2: Coffee 3: Login request 4: Mail request 5: BLANK 6: Initial user Data 7: delivery history 8: notification history 10:recall robot
         private const int NOTIFICATION_REQUEST = 1;
         private const int COFFEE_REQUEST = 2;
         private const int LOGIN_REQUEST = 3;
@@ -27,6 +33,8 @@ namespace SmartOfficeServer
         private const int INITIAL_USER_DATA = 6;
         private const int DELIVERY_HISTORY = 7;
         private const int NOTIFICATION_HISTORY = 8;
+        private const int ADMIN_DATA = 9;
+        private const int RECALL_ROBOT = 10;
         public static int Main(string[] args)
         {
             
@@ -36,6 +44,8 @@ namespace SmartOfficeServer
             Init.initializeServer();
             Console.WriteLine("Begin database initialization............");
             Init.intializeDatabase();
+            Console.WriteLine("Fetching list of users............");
+            Init.initializeSettings();
             Console.WriteLine("Ending Initialization...... \nServer setup fully \n==================================");
 
             /*
@@ -100,8 +110,51 @@ namespace SmartOfficeServer
                 Console.WriteLine("Error connecting to database\n");
             }
         }
+        public void initializeSettings()
+        {
+            users  = MySQlConnection.SelectAll("user", "id,username", "true");
+            admins = MySQlConnection.SelectAll("user", "id,username", "department='admin'");
+            admin_data_timer.Elapsed += Admin_data_timer_Elapsed;
+            admin_data_timer.Start();
+        }
+
+        /// <summary>
+        /// Every 5 min, send a pulse to the admins regarding the robots vitals and logged in employees
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Admin_data_timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            try
+            {
+                robot_status = MySQlConnection.SelectAll("robot", "id_robot,battery_status", "true");
+            }
+            catch(MySql.Data.MySqlClient.MySqlException ex)
+            {
+                //occurs when connection to database has been lost
+                Console.WriteLine("Error fetching robot vitals");
+                Console.WriteLine(ex.StackTrace);
+                Console.WriteLine(ex.Message);
+            }
+            Console.WriteLine("Sending robot vitals and logged in user data to admins.......");
+            foreach(List<String> admin_users in admins)
+            {
+                try
+                { 
+                    server.SendTo(admin_users.ElementAt(1), JsonConvert.SerializeObject(new JSONObject(ADMIN_DATA, robot_status)));
+                    server.SendTo(admin_users.ElementAt(1), JsonConvert.SerializeObject(new JSONObject(ADMIN_DATA, logged_in_users)));
+                }
+                catch(Exception ex)
+                {
+                    //occurs when unable to contact 1 of the admins. 
+                }
+            }
+
+        }
+
         private void Server_OnServerError(object Sender, ErrorArguments R)
         {
+            
             Console.WriteLine(R.ErrorMessage);
         }
 
@@ -109,7 +162,7 @@ namespace SmartOfficeServer
         /// Executed when the server receives data from a client. based on requestType executes different method stubs
         /// </summary>
         /// <param name="requestType"> 
-        /// 1: Notifications(Any kind) 2: Coffee 3: Login request 4: Mail request 5: delivery request 6: Initial user Data 7: delivery history 8: notification history
+        /// 1: Notifications(Any kind) 2: Coffee 3: Login request 4: Mail request 5: delivery request 6: Initial user Data 7: delivery history 8: notification history 10: recall robot
         /// </param>
         /// <param name="obj">Desired data</param>
         private void Server_OnDataReceived(object Sender, ReceivedArguments R)
@@ -122,44 +175,52 @@ namespace SmartOfficeServer
             switch(obj.requestType)
             {
                 case 1:
+                    Console.WriteLine(DateTime.Now + ": Generating notification for " + R.Name);
+                    Notification_Handler(R.Name, obj.info);
+                    Console.WriteLine();
                     break;
                 case 2:
-                    Console.WriteLine(System.DateTime.Now + ": Coffee delivery requested by " + R.Name);
+                    Console.WriteLine(DateTime.Now + ": Coffee delivery requested by " + R.Name);
                     response = Coffee_Handler(R.Name);
-                    Console.WriteLine(System.DateTime.Now + ": Coffee delivery response by " + R.Name + " delivered\n");
+                    Console.WriteLine(DateTime.Now + ": Coffee delivery response by " + R.Name + " delivered\n");
                     break;
                 case 3:
                     //convert login string to object and pass it to login method to verify
-                    Console.WriteLine(System.DateTime.Now + ": Trying to login " + R.Name);
+                    Console.WriteLine(DateTime.Now + ": Trying to login " + R.Name);
                     response = Login_Handler(obj.info);
-                    Console.WriteLine(System.DateTime.Now + ": Login attempt complete for " + R.Name + "\n");
+                    Console.WriteLine(DateTime.Now + ": Login attempt complete for " + R.Name + "\n");
                     break;
                 case 4:
-                    Console.WriteLine(System.DateTime.Now + ": " + R.Name + " is requesting their mail from mail room");
+                    Console.WriteLine(DateTime.Now + ": " + R.Name + " is requesting their mail from mail room");
                     response = Mail_Request_Handler(R.Name);
-                    Console.WriteLine(System.DateTime.Now + ": Mail dispatched for " + R.Name + "\n");
+                    Console.WriteLine(DateTime.Now + ": Mail dispatched for " + R.Name + "\n");
                     break;
                 case 5:
-                    Console.WriteLine(System.DateTime.Now + ": " + R.Name + " is requesting for mail delivery");
+                    Console.WriteLine(DateTime.Now + ": " + R.Name + " is requesting for mail delivery");
                     response = Delivery_Request_Handler(R.Name);
-                    Console.WriteLine(System.DateTime.Now + ": Robot dispatched for " + R.Name + " for mail delivery\n");
+                    Notification_Handler(R.Name,obj.info);
+                    Console.WriteLine(DateTime.Now + ": Robot dispatched for " + R.Name + " for mail delivery\n");
                     break;
                 case 6:
-                    Console.WriteLine(System.DateTime.Now + ": Initial user data requested by " + R.Name);
+                    Console.WriteLine(DateTime.Now + ": Initial user data requested by " + R.Name);
                     response = Initial_user_data_handler(R.Name);
-                    Console.WriteLine(System.DateTime.Now + ": Initial user data requested by " + R.Name + " has been dispatched\n");
+                    Console.WriteLine(DateTime.Now + ": Initial user data requested by " + R.Name + " has been dispatched\n");
                     break;
                 case 7:
-                    Console.WriteLine(System.DateTime.Now + ": " + R.Name + " is requesting their delivery history");
+                    Console.WriteLine(DateTime.Now + ": " + R.Name + " is requesting their delivery history");
                     response = Delivery_History_Handler(R.Name);
-                    Console.WriteLine(System.DateTime.Now + ": delivery history data requested by " + R.Name + " has been dispatched\n");
+                    Console.WriteLine(DateTime.Now + ": delivery history data requested by " + R.Name + " has been dispatched\n");
                     break;
                 case 8:
-                    Console.WriteLine(System.DateTime.Now + ": " + R.Name + " is requesting their notification history");
+                    Console.WriteLine(DateTime.Now + ": " + R.Name + " is requesting their notification history");
                     response = Notification_History_Handler(R.Name);
-                    Console.WriteLine(System.DateTime.Now + ": notification history data requested by " + R.Name + " has been dispatched\n");
+                    Console.WriteLine(DateTime.Now + ": notification history data requested by " + R.Name + " has been dispatched\n");
                     break;
-                    
+                case 10:
+                    Console.WriteLine(DateTime.Now + ": ADMIN " + R.Name + " has recalled robot " + obj.info.ToString());
+                    response = Recall_Robot_Handler(obj.info);
+                    break;
+
             }//switch
             try
             {
@@ -174,20 +235,106 @@ namespace SmartOfficeServer
 
         }
 
-        private string Delivery_Request_Handler(string name)
+        private string Recall_Robot_Handler(object info)
         {
-            //Unity data here
+            //send data to unity
+            server.SendTo(unity_client, obj.info.ToString());
+            return JsonConvert.SerializeObject(new JSONObject(RECALL_ROBOT, "Robot will be recalled soon"));
+        }
+
+        /// <summary>
+        /// Generates a notification for the reciver as well as inserts that data into the database
+        /// </summary>
+        /// <param name="sender_name"></param>
+        /// <param name="info"></param>
+        private void Notification_Handler(string sender_name, object info)
+        {
+            String json = JsonConvert.SerializeObject(info);
+            Mail mail = JsonConvert.DeserializeObject<Mail>(json);
+            if(mail.note==null)
+            {
+                mail.note = " "; //if sender did not add any note
+            }
+            // Notification notification = new Notification(name,)
 
 
-            return JsonConvert.SerializeObject(new JSONObject(DELIVERY_REQUEST, "A rebot will arrive for pickup soon!"));
+            foreach (List<String> user in users)
+            {   //match user ID to find name
+                if (user.ElementAt(1) == mail.mailDestination)
+                {
+                    mail.mailDestination = user.ElementAt(0);   //replace with user id instead
+                }
+                if (user.ElementAt(1) == sender_name)
+                {
+                    sender_name = user.ElementAt(0);   //replace with user id instead
+                    break;
+                }
+            }
+
+
+            //add a notification to the database
+            //create a list of the notification
+            //send that list to the user 
+            List<String> notification = new List<string>();
+            List<String> delivery = new List<string>();
+        //populate notification arguments
+            notification.Add("'" + mail.mailDestination + "'");
+            notification.Add("'" + sender_name + "'");
+            notification.Add("'" + mail.subject + "'");
+            notification.Add("'" + mail.note + "'");
+            notification.Add("'" + mail.mailTime.ToString("yyyy-MM-dd HH:mm:ss") + "'");
+            //populate delivery arguments
+            delivery.Add("'" + sender_name + "'");
+            delivery.Add("'" + mail.mailDestination + "'");
+            delivery.Add("'" + "2" + "'");//request type 2 is for deliveries
+            delivery.Add("'" + mail.mailTime.ToString("yyyy-MM-dd HH:mm:ss") + "'");
+
+            /// query = insert into notification (id_user, id_sender, subject, description, time) values ();
+            ///      = insert into delivery (id_user, id_reciver, request_type, start_time) values ();
+            /// add records to both the notification and delivery tables
+            try
+            {
+            //add to the notification table
+                MySQlConnection.Insert("notification", "id_user, id_sender, subject, description, time",notification);
+                //add to the delivery table
+                MySQlConnection.Insert("delivery", "id_user,id_reciver,request_type,start_time", delivery);
+            }
+            catch(MySql.Data.MySqlClient.MySqlException e)
+            {
+                Console.WriteLine(e.StackTrace);
+                Console.WriteLine(e.Message);
+            }
+            notification.Insert(0, " ");    //add dummy notification id. we don't need it to display notification to the user. It is stored in the database if needed
+        //Send mail notification to the receiver of the mail so they know it's coming
+            server.SendTo(mail.mailDestination, JsonConvert.SerializeObject(notification));
 
         }
 
+        /// <summary>
+        /// Handles delivery requests. Note: Initial database entries are handled by notification handler
+        /// </summary>
+        /// <param name="name">the sender of this request</param>
+        /// <returns></returns>
+        private string Delivery_Request_Handler(string name)
+        {
+            
+            //Unity data here
+
+
+            return JsonConvert.SerializeObject(new JSONObject(DELIVERY_REQUEST, "A robot will arrive for pickup soon!"));
+
+        }
+
+        /// <summary>
+        /// Deliver mail from the mail room to an employee
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         private String Mail_Request_Handler(string name)
         {
             //Unity data here
 
-            return JsonConvert.SerializeObject(new JSONObject(MAIL_REQUEST, "A rebot will deliver you your mail soon!"));
+            return JsonConvert.SerializeObject(new JSONObject(MAIL_REQUEST, "A robot will deliver you your mail soon!"));
         }
 
         private String Notification_History_Handler(string name)
@@ -200,7 +347,7 @@ namespace SmartOfficeServer
             String id = notification.ElementAt(0).ElementAt(0);
             //            query = "Select * from user, notifications where user.id = 'id' and user.id=notification.id_user limit 50";
             //            get notification history of the user
-            notification = MySQlConnection.SelectAll("user,notification n", "n.id_notification,n.id_user,n.id_sender,n.subject,n.description,n.time", "user.id = '" + id + "' and user.id=n.id_user limit 50;");
+            notification = MySQlConnection.SelectAll("user,notification n", "n.id_notification,n.id_user,n.id_sender,n.subject,n.description,n.time", "user.id = '" + id + "' and user.id=n.id_user order by n.time limit 50;");
 
             //Now we just need to serialize this chunk of data into a JSON object and pass it on to the client
             JSONObject obj = new JSONObject(NOTIFICATION_HISTORY, notification);
@@ -217,7 +364,7 @@ namespace SmartOfficeServer
             String id = delivery.ElementAt(0).ElementAt(0);
             //          query = "Select * from delivery, user where user.id = id and user.id = delivery.id_user and status = 1 limit 50;"
             //          get delivery history of user
-            delivery = MySQlConnection.SelectAll("delivery d,user", "d.id_delivery, d.id_user, d.id_reciver, d.request_type, d.start_time, d.end_time, d.status", "user.id = '" + id + "' and user.id = d.id_user and status = 1 limit 50;");
+            delivery = MySQlConnection.SelectAll("delivery d,user", "d.id_delivery, d.id_reciver, d.request_type, d.start_time, d.end_time, d.status", "user.id = '" + id + "' and user.id = d.id_user and status = 1 limit 50;");
 
             //Now we just need to serialize this chunk of data into a JSON object and pass it on to the client
             JSONObject obj = new JSONObject(DELIVERY_HISTORY, delivery);
@@ -300,11 +447,13 @@ namespace SmartOfficeServer
         private void Server_OnClientDisconnected(object Sender, DisconnectedArguments R)
         {
             Console.WriteLine(R.Name + " has disconnected!");
+            logged_in_users.Remove(R.Name);
         }
 
         private void Server_OnClientConnected(object Sender, ConnectedArguments R)
         {
             Console.WriteLine(R.Name + " has connected");
+            logged_in_users.Add(R.Name);
         }
         public static string GetLocalIPAddress()
         {

@@ -52,9 +52,9 @@
 
                 </Grid>
             </TabItem>
-            <TabItem Header="Delivery History">
+            <TabItem x:Name="Delivery_History_Tab" Header="Delivery History">
                 <Grid>
-                    <DataGrid x:Name="dataGridHistory" Margin="29,33,0,0" VerticalAlignment="Top" ItemsSource="{Binding}" IsReadOnly="True"/>
+                    <DataGrid x:Name="dataGridHistory" Margin="29,33,0,0" VerticalAlignment="Top" ItemsSource="{Binding}" IsReadOnly="True" AutoGenerateColumns="True" AlternatingRowBackground="#44E51400" AreRowDetailsFrozen="True" FontSize="16" />
                 </Grid>
             </TabItem>
 

@@ -93,11 +93,12 @@ namespace SmartOfficeMetro
                         break;
                     }
                 }
+                
                 NotificationTile tile = new NotificationTile(DateTime.Parse(notification.ElementAt(5)).ToString("MMM d HH:MM"), Name, notification.ElementAt(3), notification.ElementAt(4),notification.ElementAt(2)=="8");
                 tile.HorizontalAlignment = HorizontalAlignment.Stretch;
                 tile.Width = Double.NaN;        //so tile width becomes auto instead of specefic pixel numbers
                 tile.MouseEnter += Tile_MouseEnter;
-                stackPanelNotifications.Children.Add(tile);
+                stackPanelNotifications.Children.Insert(0,tile);
             }
             
            // UserManager.Instance.current_notifications.Clear();     //Clear current notifications after displaying them
