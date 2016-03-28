@@ -86,7 +86,7 @@ namespace SmartOfficeServer
         public void initializeServer()
         {
             //dynamically gets the local IP address of the server
-            iPAddress = "172.31.131.100";
+            iPAddress = "172.31.209.26";
             server = new Server(iPAddress, port);
             server.OnClientConnected += Server_OnClientConnected;
             server.OnClientDisconnected += Server_OnClientDisconnected;

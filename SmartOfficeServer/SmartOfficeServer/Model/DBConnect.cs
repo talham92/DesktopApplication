@@ -41,9 +41,10 @@ namespace SmartOfficeServer.Model
                 connection.Open();
                 return true;
             }
-           catch(Exception e)
+           catch(MySqlException e)
             {
                 Console.WriteLine(e.StackTrace);
+                Console.WriteLine(e.Message);
                 return false;
             }
         }

@@ -35,7 +35,7 @@ namespace SmartOfficeMetro
         public SmartOfficeClient(UserManager manager)
         {
             client = new Client();
-            client.ServerIp = "172.31.131.100";
+            client.ServerIp = "172.31.209.26";
             client.ServerPort = "8888";
             client.ClientName = manager.username;
 
