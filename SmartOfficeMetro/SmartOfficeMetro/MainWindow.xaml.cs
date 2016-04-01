@@ -54,7 +54,7 @@ namespace SmartOfficeMetro
          //   login_window.Show();
             
             InitializeComponent();
-
+            buttonAdmin.Visibility = Visibility.Collapsed;
             //set image
             BitmapImage logo = new BitmapImage();
             logo.BeginInit();
@@ -173,7 +173,8 @@ namespace SmartOfficeMetro
             SmartOfficeClient.sendMessage(8, "null");
             notification_window = new Notifications();
             main_delivery_window = new MailService();
-//Check to see if user is admin. If yes, add admin features, otherwise ignore them
+            //Check to see if user is admin. If yes, add admin features, otherwise ignore them
+            System.Diagnostics.Debug.WriteLine("CHECKING USER DEPARTMENT " + UserManager.Instance.department);
             if(UserManager.Instance.department.ToLower() =="admin")
             {
                 AdminManager.Instance.robot_list = new List<Robot>();

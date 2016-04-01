@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SmartOfficeServer</name>
+    </assembly>
+    <members>
+        <!-- Badly formed XML comment ignored for member "M:SmartOfficeServer.Model.DBConnect.SelectAll(System.String,System.String,System.String)" -->
+        <member name="T:SmartOfficeServer.Model.JSONObject">
+            <summary>
+            Converts an object to a JSON object accompnied with a requestType identifier
+            </summary>
+        </member>
+        <member name="M:SmartOfficeServer.Model.JSONObject.#ctor(System.Int32,System.Object)">
+            <summary>
+            Converts an object to a JSON object accompnied with a requestType identifier
+            </summary>
+            <param name="requestType">1: Notifications(Any kind) 2: Coffee 3: Login request 4: Mail request 5: Delivery request 6: Initial user Data 7: delivery history 8: notification history 9: robot status</param>
+            <param name="information">The data to be passed</param>
+        </member>
+        <member name="M:SmartOfficeServer.TCPServer.Admin_data_timer_Elapsed(System.Object,System.Timers.ElapsedEventArgs)">
+            <summary>
+            Every 5 min, send a pulse to the admins regarding the robots vitals and logged in employees
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:SmartOfficeServer.TCPServer.Server_OnDataReceived(System.Object,NetworksApi.TCP.SERVER.ReceivedArguments)">
+            <summary>
+            Executed when the server receives data from a client. based on requestType executes different method stubs
+            </summary>
+            <param name="requestType"> 
+            1: Notifications(Any kind) 2: Coffee 3: Login request 4: Mail request 5: delivery request 6: Initial user Data 7: delivery history 8: notification history 10: recall robot 11: Robot Battery Unity 12: Disconnect User
+            </param>
+            <param name="obj">Desired data</param>
+        </member>
+        <member name="M:SmartOfficeServer.TCPServer.Notification_Handler(System.String,System.Object)">
+            <summary>
+            Generates a notification for the reciver as well as inserts that data into the database
+            </summary>
+            <param name="sender_name"></param>
+            <param name="info"></param>
+        </member>
+        <member name="M:SmartOfficeServer.TCPServer.Delivery_Request_Handler(System.String,System.Object)">
+            <summary>
+            Handles delivery requests. Note: Initial database entries are handled by notification handler
+            </summary>
+            <param name="name">the sender of this request</param>
+            <returns></returns>
+        </member>
+        <member name="M:SmartOfficeServer.TCPServer.Mail_Request_Handler(System.String)">
+            <summary>
+            Deliver mail from the mail room to an employee
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SmartOfficeServer.TCPServer.Login_Handler(System.Object)">
+            <summary>
+            Checks for login of the user. returns false if entered details are incorrect. true otherwise
+            Also populates the user object with other details like name, age, department etc
+            </summary>
+            <param name="login">User object with username and password initialized</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

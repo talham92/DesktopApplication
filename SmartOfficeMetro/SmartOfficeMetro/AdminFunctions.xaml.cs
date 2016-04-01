@@ -22,14 +22,11 @@ namespace SmartOfficeMetro
     /// </summary>
     public partial class AdminFunctions : UserControl
     {
-        DataTable logged_in_users = new DataTable();
+        
         public AdminFunctions()
         {
             InitializeComponent();
-            logged_in_users.Columns.Add("User ID");
-            logged_in_users.Columns.Add("User Name");
-            logged_in_users.Columns.Add("Disconnect User");
-            logged_in_users.Rows.Add(new object[] { "test", "test", "test" });
+            
 
             foreach(Robot robot in AdminManager.Instance.robot_list)
             {
@@ -38,7 +35,7 @@ namespace SmartOfficeMetro
                 robot_tile.Width = Double.NaN;  //to automatically set it to auto width
                 stackPanelBattery.Children.Add(robot_tile);
             }
-            availableUserGrid.DataContext = logged_in_users.DefaultView;
+            
             
         }
 
@@ -51,6 +48,8 @@ namespace SmartOfficeMetro
         public void Update_UI()
         {
             stackPanelBattery.Children.Clear();
+            stackPanelLoggedUser.Children.Clear();
+  
             foreach (Robot robot in AdminManager.Instance.robot_list)
             {
                 Tile_Battery_Info robot_tile = new Tile_Battery_Info(robot);
@@ -65,11 +64,6 @@ namespace SmartOfficeMetro
                 foreach (String user in AdminManager.Instance.logged_in_users)
                 {
                     String id = "";
-                    //add a disconnect user button and assign it a tag of username which can be used to disconnect user
-                    Button disconnect_button = new Button();
-                    disconnect_button.Content = "Disconnect";
-                    disconnect_button.Tag = user;
-                    disconnect_button.Click += Disconnect_button_Click;
                     //perform a data search in local table for user ID
                     foreach (List<String> u in UserManager.Instance.user_details)
                     {
@@ -79,8 +73,16 @@ namespace SmartOfficeMetro
                             break;
                         }//if
                     }//foreach find user id
-                    logged_in_users.Rows.Add(new object[] { id, user, disconnect_button });
+
+                    Logged_In_User_Tile tile = new Logged_In_User_Tile(id, user);
+                    tile.HorizontalAlignment = HorizontalAlignment.Stretch;
+                    tile.Width = Double.NaN;        //so tile width becomes auto instead of specefic pixel numbers
+
+                    stackPanelLoggedUser.Children.Insert(0, tile);
+
+                    
                 }//foreach populate logged in users
+                stackPanelLoggedUser.Margin = new Thickness(0);
                 System.Diagnostics.Debug.WriteLine("I came here once");
             }
             catch(NullReferenceException ex)

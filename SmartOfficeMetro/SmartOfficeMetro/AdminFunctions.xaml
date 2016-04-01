@@ -24,15 +24,18 @@
             <TabItem Header="Available Employees">
                 <Grid>
                     <ScrollViewer Margin="0,36,0,0">
-                        <DataGrid x:Name="availableUserGrid" ItemsSource="{Binding}" HorizontalAlignment="Left" VerticalAlignment="Top" Height="264" Width="290"/>
+                        <StackPanel x:Name="stackPanelLoggedUser" >
+
+                        </StackPanel>
                     </ScrollViewer>
                     <Label x:Name="availableUserLabel" Content="Available Employees" Foreground="White" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Top" Height="50" Width="178"/>
                 </Grid>
             </TabItem>
             
-            <TabItem Header="Employee Directory">
+     <!--       <TabItem Header="Employee Directory">
                 <Grid Background="#FFE5E5E5"/>
             </TabItem>
+            -->
         </Custom:MetroAnimatedTabControl>
 
     </Grid>

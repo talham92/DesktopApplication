@@ -24,7 +24,7 @@ namespace SmartOfficeServer
         List<String> logged_in_users = new List<string>();
         System.Timers.Timer admin_data_timer = new System.Timers.Timer(10000);
         private const string unity_client = "unity";
-        //1: Notifications(Any kind) 2: Coffee 3: Login request 4: Mail request 5: BLANK 6: Initial user Data 7: delivery history 8: notification history 10:recall robot
+        //1: Notifications(Any kind) 2: Coffee 3: Login request 4: Mail request 5: Delivery Request 6: Initial user Data 7: delivery history 8: notification history 10:recall robot
         private const int NOTIFICATION_REQUEST = 1;
         private const int COFFEE_REQUEST = 2;
         private const int LOGIN_REQUEST = 3;
@@ -48,37 +48,56 @@ namespace SmartOfficeServer
             Init.initializeSettings();
             Console.WriteLine("Ending Initialization...... \nServer setup fully \n==================================");
 
-            /*
-            List<List<String>> data = new List<List<string>>();
-            String name = "raghav";
-            
-            data = Init.MySQlConnection.SelectAll("user", "id", "username = '" + name + "'; ");
+        /*
+        List<List<String>> data = new List<List<string>>();
+        String name = "raghav";
 
-            Console.WriteLine(data.ElementAt(0).ElementAt(0));
-            String id = data.ElementAt(0).ElementAt(0);
+        data = Init.MySQlConnection.SelectAll("user", "id", "username = '" + name + "'; ");
 
-            data = Init.MySQlConnection.SelectAll("user", "*", "true");
+        Console.WriteLine(data.ElementAt(0).ElementAt(0));
+        String id = data.ElementAt(0).ElementAt(0);
 
-           
-            //Now we just need to serialize this chunk of data into a JSON object and pass it on to the client
-            JSONObject obj = new JSONObject(DELIVERY_HISTORY, data);
-            String jasonString =  JsonConvert.SerializeObject(obj);
+        data = Init.MySQlConnection.SelectAll("user", "*", "true");
 
-            JSONObject obj2 = JsonConvert.DeserializeObject<JSONObject>(jasonString);
-            List<List<String>> jsonList = JsonConvert.DeserializeObject<List<List<String>>>(obj2.info.ToString());
 
-            foreach(List<String> list in jsonList)
+        //Now we just need to serialize this chunk of data into a JSON object and pass it on to the client
+        JSONObject obj = new JSONObject(DELIVERY_HISTORY, data);
+        String jasonString =  JsonConvert.SerializeObject(obj);
+
+        JSONObject obj2 = JsonConvert.DeserializeObject<JSONObject>(jasonString);
+        List<List<String>> jsonList = JsonConvert.DeserializeObject<List<List<String>>>(obj2.info.ToString());
+
+        foreach(List<String> list in jsonList)
+        {
+            foreach(String d in list)
             {
-                foreach(String d in list)
-                {
-                    Console.Write(d + "  ");
-                }
-                Console.WriteLine();
+                Console.Write(d + "  ");
             }
-            */
+            Console.WriteLine();
+        }
+        */
 
-            Console.WriteLine("Press enter to close...");
-            Console.ReadLine();
+        //Console.WriteLine("Press enter to close...");
+        Read:
+            String input = Console.ReadLine();
+            if (input.ToLower() == "disconnect all")
+            {
+
+                foreach (String user in Init.logged_in_users)
+                {
+                    try
+                    {
+                        Init.server.DisconnectClient(user);
+                        Console.WriteLine("Disconnected " + user);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Error disconnecting: " + user);
+                    }
+                    //Init.server.DisconnectClient()
+                }
+            }
+                goto Read;
             return 0;
 
         }
@@ -86,13 +105,14 @@ namespace SmartOfficeServer
         public void initializeServer()
         {
             //dynamically gets the local IP address of the server
-            iPAddress = "172.31.209.26";
+            System.Diagnostics.Debug.WriteLine(GetLocalIPAddress());
+            iPAddress = "172.31.211.13"; //GetLocalIPAddress();//"172.31.209.26";
             server = new Server(iPAddress, port);
             server.OnClientConnected += Server_OnClientConnected;
             server.OnClientDisconnected += Server_OnClientDisconnected;
             server.OnDataReceived += Server_OnDataReceived;
             server.OnServerError += Server_OnServerError;
-
+            
             server.Start();
             Console.WriteLine("Server Connected! \n");
 
@@ -157,18 +177,19 @@ namespace SmartOfficeServer
             
             Console.WriteLine(R.ErrorMessage);
         }
-
+        
         /// <summary>
         /// Executed when the server receives data from a client. based on requestType executes different method stubs
         /// </summary>
         /// <param name="requestType"> 
-        /// 1: Notifications(Any kind) 2: Coffee 3: Login request 4: Mail request 5: delivery request 6: Initial user Data 7: delivery history 8: notification history 10: recall robot
+        /// 1: Notifications(Any kind) 2: Coffee 3: Login request 4: Mail request 5: delivery request 6: Initial user Data 7: delivery history 8: notification history 10: recall robot 11: Robot Battery Unity 12: Disconnect User
         /// </param>
         /// <param name="obj">Desired data</param>
         private void Server_OnDataReceived(object Sender, ReceivedArguments R)
         {
             String response = "";
             Console.WriteLine("I got data from " + R.Name);
+            Console.WriteLine("Data received: " + R.ReceivedData.ToString());
          //   Console.WriteLine(R.ReceivedData.ToString());
             obj = JsonConvert.DeserializeObject<JSONObject>(R.ReceivedData);
             //differentiate data based on the type of request received
@@ -197,7 +218,7 @@ namespace SmartOfficeServer
                     break;
                 case 5:
                     Console.WriteLine(DateTime.Now + ": " + R.Name + " is requesting for mail delivery");
-                    response = Delivery_Request_Handler(R.Name);
+                    response = Delivery_Request_Handler(R.Name, obj.info);
                     Notification_Handler(R.Name,obj.info);
                     Console.WriteLine(DateTime.Now + ": Robot dispatched for " + R.Name + " for mail delivery\n");
                     break;
@@ -220,6 +241,13 @@ namespace SmartOfficeServer
                     Console.WriteLine(DateTime.Now + ": ADMIN " + R.Name + " has recalled robot " + obj.info.ToString());
                     response = Recall_Robot_Handler(obj.info);
                     break;
+                case 11:
+                    break;
+                case 12:
+                    Console.WriteLine(R.Name + " has forced " + obj.info + " to disconnect!");
+                    response = Disconnect_User_Handler(obj.info);
+                    Console.WriteLine();
+                    break;
 
             }//switch
             try
@@ -231,9 +259,26 @@ namespace SmartOfficeServer
                 //occurs when server looses connection with client;
                 //for future=> try sending the data after connection is regained. would need the server to keep some sort of record
                 // for this
+                Console.WriteLine(e.StackTrace);
             }
 
         }
+
+
+        private String Disconnect_User_Handler(object info)
+        {
+
+            //Send data to unity
+          //  server.SendTo("unity", JsonConvert.SerializeObject(new JSONObject(COFFEE_REQUEST, name)));
+            //Unity
+            String response = info.ToString() + " has been disconnected!";
+            Console.WriteLine(response);
+            //convert to standerdized JSON object for sending
+            JSONObject obj = new JSONObject(12, response);
+            return JsonConvert.SerializeObject(obj);
+
+        }
+
 
         private string Recall_Robot_Handler(object info)
         {
@@ -251,6 +296,8 @@ namespace SmartOfficeServer
         {
             String json = JsonConvert.SerializeObject(info);
             Mail mail = JsonConvert.DeserializeObject<Mail>(json);
+            Console.WriteLine("Sender: " + sender_name);
+            Console.WriteLine("Mail Info: " + json);
             if(mail.note==null)
             {
                 mail.note = " "; //if sender did not add any note
@@ -315,12 +362,15 @@ namespace SmartOfficeServer
         /// </summary>
         /// <param name="name">the sender of this request</param>
         /// <returns></returns>
-        private string Delivery_Request_Handler(string name)
+        private string Delivery_Request_Handler(string sender_name, object info)
         {
-            
+            String json = JsonConvert.SerializeObject(info);
+            Mail mail = JsonConvert.DeserializeObject<Mail>(json);
             //Unity data here
-
-
+            List<String> delivery_info = new List<string>();
+            delivery_info.Add(sender_name);delivery_info.Add(mail.mailDestination);delivery_info.Add(mail.mailTime.ToString());
+            server.SendTo("unity", JsonConvert.SerializeObject(new JSONObject(DELIVERY_REQUEST, delivery_info)));
+            //send response back to user;
             return JsonConvert.SerializeObject(new JSONObject(DELIVERY_REQUEST, "A robot will arrive for pickup soon!"));
 
         }
@@ -333,7 +383,7 @@ namespace SmartOfficeServer
         private String Mail_Request_Handler(string name)
         {
             //Unity data here
-
+            server.SendTo("unity", JsonConvert.SerializeObject(new JSONObject(MAIL_REQUEST, name)));
             return JsonConvert.SerializeObject(new JSONObject(MAIL_REQUEST, "A robot will deliver you your mail soon!"));
         }
 
@@ -433,9 +483,9 @@ namespace SmartOfficeServer
 
         private String Coffee_Handler(string name)
         {
-            
-        //Send data to unity
 
+            //Send data to unity
+            server.SendTo("unity", JsonConvert.SerializeObject(new JSONObject(COFFEE_REQUEST, name)));
         //Unity
             String response = "Your coffee will arrive soon!";
         //convert to standerdized JSON object for sending
@@ -454,6 +504,7 @@ namespace SmartOfficeServer
         {
             Console.WriteLine(R.Name + " has connected");
             logged_in_users.Add(R.Name);
+            
         }
         public static string GetLocalIPAddress()
         {

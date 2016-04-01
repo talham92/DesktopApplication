@@ -55,7 +55,7 @@ namespace SmartOfficeMetro
             {
                 user_names.Add(new List<string> { users.ElementAt(0), users.ElementAt(1) });
             }
-            comboBoxReciver.ItemsSource = new Func<List<String>>(() => { List<String> dummy = new List<string>(); foreach (List<String> user in UserManager.Instance.user_details) { dummy.Add(user.ElementAt(1)); } return dummy; })();
+            comboBoxReciver.ItemsSource = new Func<List<String>>(() => { List<String> dummy = new List<string>(); foreach (List<String> user in UserManager.Instance.user_details) { if (user.ElementAt(1) == "unity" || user.ElementAt(1) == "MAIL") { continue; } else { dummy.Add(user.ElementAt(1)); } } return dummy; })();
         }
 
         private void Delivery_History_Tab_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

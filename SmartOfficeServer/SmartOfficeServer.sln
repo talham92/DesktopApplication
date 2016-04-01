@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartOfficeServer", "SmartOfficeServer\SmartOfficeServer.csproj", "{8BA1752B-2D59-4469-9689-C1CAB7264678}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartOfficeMetro", "..\SmartOfficeMetro\SmartOfficeMetro\SmartOfficeMetro.csproj", "{0F56EDA9-CF7F-4C49-A67B-3FCD434D4902}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerClientData", "ServerClientData\ServerClientData.csproj", "{3698AE3A-8E82-4D1B-84FE-D19C8FCE25B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{8BA1752B-2D59-4469-9689-C1CAB7264678}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8BA1752B-2D59-4469-9689-C1CAB7264678}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8BA1752B-2D59-4469-9689-C1CAB7264678}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F56EDA9-CF7F-4C49-A67B-3FCD434D4902}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F56EDA9-CF7F-4C49-A67B-3FCD434D4902}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F56EDA9-CF7F-4C49-A67B-3FCD434D4902}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F56EDA9-CF7F-4C49-A67B-3FCD434D4902}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3698AE3A-8E82-4D1B-84FE-D19C8FCE25B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3698AE3A-8E82-4D1B-84FE-D19C8FCE25B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3698AE3A-8E82-4D1B-84FE-D19C8FCE25B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3698AE3A-8E82-4D1B-84FE-D19C8FCE25B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

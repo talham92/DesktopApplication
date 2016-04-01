@@ -66,14 +66,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="NetworksApi.dll" size="19456">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="NetworksApi.dll" size="18944">
       <assemblyIdentity name="NetworksApi" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>OiFiSmv+gThSqnWtqg1dqqxMd56/qgS7ZS89DHQsOfs=</dsig:DigestValue>
+        <dsig:DigestValue>xNzp4Yf5t0huz2VHk8s7UWUrOcRerT9rvrA7l8CYhjE=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -102,14 +102,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SmartOfficeMetro.exe" size="1809344">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SmartOfficeMetro.exe" size="1812416">
       <assemblyIdentity name="SmartOfficeMetro" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>yD6Fsor0WKeBZv+m87WAsedVDR2XOvELOoKCylN51Hk=</dsig:DigestValue>
+        <dsig:DigestValue>En6K9i2sOkD1Q3fiGfv1BQTTY3GxZZr1zHASPZUF/HE=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

@@ -35,7 +35,7 @@ namespace SmartOfficeMetro
         public SmartOfficeClient(UserManager manager)
         {
             client = new Client();
-            client.ServerIp = "172.31.209.26";
+            client.ServerIp = "172.31.211.13";
             client.ServerPort = "8888";
             client.ClientName = manager.username;
 
@@ -208,9 +208,20 @@ namespace SmartOfficeMetro
                 case 10:
                     Recall_Robot_Handler(ReceivedData.info);
                     break;
+                case 12:
+                    Disconnect_User_Handler(ReceivedData.info);
+                    break;
             }//switch
 
         }//on data received client
+
+        private void Disconnect_User_Handler(object info)
+        {
+            main_thread.Post(new SendOrPostCallback(new Action<object>(o => {
+                var mainview0 = System.Windows.Application.Current.Windows.OfType<MetroWindow>().Last();
+                mainview0.ShowMessageAsync("Notification", info.ToString(), MessageDialogStyle.Affirmative);
+            })), null);
+        }
 
         private void Recall_Robot_Handler(object info)
         {
@@ -232,9 +243,10 @@ namespace SmartOfficeMetro
             {
                 List<List<String>> robots = JsonConvert.DeserializeObject<List<List<String>>>(info.ToString());
                 List<Robot> robot_list = new List<Robot>();
+                AdminManager.Instance.battery_degradation += 1;
                 foreach (List<string> robot in robots)
                 {
-                    robot_list.Add(new Robot(robot.ElementAt(0), Double.Parse(robot.ElementAt(1))));
+                    robot_list.Add(new Robot(robot.ElementAt(0), Double.Parse(robot.ElementAt(1)) - AdminManager.Instance.battery_degradation ));
                 }
                 AdminManager.Instance.robot_list = robot_list;
                 //maybe call a function to update UI here or can update upon load too

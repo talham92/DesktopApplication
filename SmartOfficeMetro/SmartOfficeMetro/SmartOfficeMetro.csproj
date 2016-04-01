@@ -133,6 +133,9 @@
     <Compile Include="AdminFunctions.xaml.cs">
       <DependentUpon>AdminFunctions.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Logged_In_User_Tile.xaml.cs">
+      <DependentUpon>Logged_In_User_Tile.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MailService.xaml.cs">
       <DependentUpon>MailService.xaml</DependentUpon>
     </Compile>
@@ -157,6 +160,10 @@
     </Compile>
     <Compile Include="ViewModel.cs" />
     <Page Include="AdminFunctions.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Logged_In_User_Tile.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

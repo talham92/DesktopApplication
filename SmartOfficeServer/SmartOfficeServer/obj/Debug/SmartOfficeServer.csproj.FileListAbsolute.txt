@@ -27,3 +27,4 @@ C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\SmartOf
 C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\SmartOfficeServer\SmartOfficeServer\bin\Debug\EntityFramework.SqlServer.xml
 C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\SmartOfficeServer\SmartOfficeServer\bin\Debug\Newtonsoft.Json.xml
 C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\SmartOfficeServer\SmartOfficeServer\obj\Debug\SmartOfficeServer.csprojResolveAssemblyReference.cache
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\SmartOfficeServer\SmartOfficeServer\bin\Debug\SmartOfficeServer.XML

@@ -14,7 +14,7 @@ namespace SmartOfficeMetro.Model
 
         public List<Robot> robot_list { get; set; }
         public List<String> logged_in_users { get; set; }
-
+        public int battery_degradation { get; set; }
         AdminManager()
         {
 

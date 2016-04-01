@@ -42,7 +42,7 @@
 
                     <Label x:Name="label2" Content="Or" HorizontalAlignment="Left" Height="28" Margin="168,33,0,0" VerticalAlignment="Center" FontSize="16" Grid.Row="3" FontWeight="Bold" Grid.RowSpan="2"/>
                     <Custom:ToggleSwitch Content="Send to Mail Room" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Grid.Row="5" IsCheckedChanged="sendToMailRoom"/>
-                    <Custom:ToggleSwitch Content="3) Add Note" Grid.Column="1" HorizontalAlignment="Left" Margin="17,11,0,0" Grid.Row="1" VerticalAlignment="Top"/>
+                    <Label Content="3) Add Note" Grid.Column="1" HorizontalAlignment="Left" Margin="17,11,0,0" Grid.Row="1" VerticalAlignment="Top" FontSize="16"/>
                     <TextBox x:Name="textBoxSubject" Grid.Column="1" HorizontalAlignment="Left" Height="30" Margin="17,16,-89,0" Grid.Row="2" Grid.RowSpan="4" TextWrapping="Wrap" VerticalAlignment="Top" Width="295" SpellCheck.IsEnabled="True" ToolTip="Add a Subject to your delivery">
 
                     </TextBox>
