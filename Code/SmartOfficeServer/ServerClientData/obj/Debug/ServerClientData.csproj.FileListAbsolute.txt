@@ -1,0 +1,5 @@
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\SmartOfficeServer\ServerClientData\bin\Debug\ServerClientData.dll
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\SmartOfficeServer\ServerClientData\bin\Debug\ServerClientData.pdb
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\SmartOfficeServer\ServerClientData\obj\Debug\ServerClientData.csprojResolveAssemblyReference.cache
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\SmartOfficeServer\ServerClientData\obj\Debug\ServerClientData.dll
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\SmartOfficeServer\ServerClientData\obj\Debug\ServerClientData.pdb

@@ -1,0 +1,42 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SmartOfficeMetro"
+             xmlns:Custom="http://metro.mahapps.com/winfx/xaml/controls" x:Class="SmartOfficeMetro.AdminFunctions"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+
+        <Custom:MetroAnimatedTabControl x:Name="metroAnimatedTabControl" Margin="0">
+            <TabItem Header="Robot Status">
+                <Grid>
+                    <Label x:Name="labelRobotStatusHeader" Content="Robot Status" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White"/>
+                    <ScrollViewer Margin="0,50,0,0">
+                        <StackPanel x:Name="stackPanelBattery" >
+
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </TabItem>
+            
+            <TabItem Header="Available Employees">
+                <Grid>
+                    <ScrollViewer Margin="0,36,0,0">
+                        <StackPanel x:Name="stackPanelLoggedUser" >
+
+                        </StackPanel>
+                    </ScrollViewer>
+                    <Label x:Name="availableUserLabel" Content="Available Employees" Foreground="White" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Top" Height="50" Width="178"/>
+                </Grid>
+            </TabItem>
+            
+     <!--       <TabItem Header="Employee Directory">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+            -->
+        </Custom:MetroAnimatedTabControl>
+
+    </Grid>
+</UserControl>

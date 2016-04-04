@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="SmartOfficeMetro.Tile_Battery_Info"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SmartOfficeMetro"
+             xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+             mc:Ignorable="d" Height="152.666" Width="266.932"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid Margin="0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="1.5*"/>
+        </Grid.ColumnDefinitions>
+
+        <Controls:MetroProgressBar x:Name="robotBattery" Value="{Binding BatteryLevel}" Height="50" Width="100" Orientation="Vertical" RenderTransformOrigin="0.5,0.5" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,52,0,51" Foreground="#FFC71818" Grid.Column="1" >
+            <Controls:MetroProgressBar.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-90"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Controls:MetroProgressBar.RenderTransform>
+
+        </Controls:MetroProgressBar>
+        <StackPanel Margin="0,0,0,68" HorizontalAlignment="Left" Grid.ColumnSpan="2">
+            <!--<Label Content="50% remaining/ available (plugged in , charging)"/>-->
+            <Label x:Name="robotID" Content="Label" HorizontalAlignment="Left" VerticalAlignment="Top" Height="29" Width="119" Foreground="White"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Power Availability: " Foreground="White" FontSize="11"/>
+                <TextBlock Text="{Binding BatteryLevel}" Foreground="White" FontSize="11"/>
+                <TextBlock Text="%" Foreground="White" FontSize="11"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Remaining Time: " Foreground="White" FontSize="11"/>
+                <TextBlock Text="{Binding Remaining_Battery_Time}" Foreground="White" FontSize="11"/>
+                <TextBlock Text=" min" Foreground="White" FontSize="11"/>
+            </StackPanel>
+        </StackPanel>
+        <Button x:Name="recallButton" Content="Recall" FontSize="12" HorizontalAlignment="Left" Margin="21,70,0,0" VerticalAlignment="Top" Width="75" Click="recallButton_Click"/>
+    </Grid>
+</UserControl>

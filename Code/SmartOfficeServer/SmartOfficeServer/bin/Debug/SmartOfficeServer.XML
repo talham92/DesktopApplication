@@ -1,0 +1,230 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SmartOfficeServer</name>
+    </assembly>
+    <members>
+        <member name="T:SmartOfficeServer.Model.DBConnect">
+            <summary>
+            Used to establish connection with the MySQL database
+            </summary>
+        </member>
+        <member name="M:SmartOfficeServer.Model.DBConnect.#ctor">
+            <summary>
+            Constructor for creating db connection
+            </summary>
+        </member>
+        <member name="M:SmartOfficeServer.Model.DBConnect.Initialize">
+            <summary>
+            Provide MySQL DB details like server, database name, username, password etc
+            </summary>
+        </member>
+        <member name="M:SmartOfficeServer.Model.DBConnect.OpenConnection">
+            <summary>
+            Tries to establish connection with the database
+            </summary>
+            <returns>True if connection is established, false otherwise</returns>
+        </member>
+        <member name="M:SmartOfficeServer.Model.DBConnect.CloseConnection">
+            <summary>
+            Attempts to close the current DB connection
+            </summary>
+            <returns>True if sucessfully closed, false otherwise</returns>
+        </member>
+        <member name="M:SmartOfficeServer.Model.DBConnect.Insert(System.String,System.String,System.Collections.Generic.List{System.String})">
+            <summary>
+            Used to insert data into the database
+            </summary>
+            <param name="tablename">Name of the table data needs to be inserted into</param>
+            <param name="columns">columns the data has to be inserted in</param>
+            <param name="args">the actual data to be inserted. can contain orderby/limit parameters as well</param>
+            <returns>true if sucessfully inserted, false otherwise</returns>
+        </member>
+        <member name="M:SmartOfficeServer.Model.DBConnect.Update(System.String,System.String,System.String,System.String)">
+            <summary>
+            Updates current data in database
+            </summary>
+            <param name="tablename">table to be used in the mysql query</param>
+            <param name="oldArg">the data to be replaced</param>
+            <param name="newArg">the new data to be inserted</param>
+            <param name="condition">condition that decides what column/row to look for</param>
+            <returns>true if successful, false otherwise</returns>
+        </member>
+        <member name="M:SmartOfficeServer.Model.DBConnect.Delete(System.String,System.String)">
+            <summary>
+            Deletes data from the table
+            </summary>
+            <param name="tablename">table the data needs to be deleted from</param>
+            <param name="condition">condition that decides what needs to be deleted</param>
+            <returns>true if successful, false otherwise</returns>
+        </member>
+        <member name="M:SmartOfficeServer.Model.DBConnect.SelectAll(System.String,System.String,System.String)">
+            <summary>
+            Select query to fetch data from the database
+            </summary>
+            <param name="tablename">table to be used for the search</param>
+            <param name="columns">columns that need to be returned. * for all columns</param>
+            <param name="condition">condition that decides what gets fetched. * for everything</param>
+            <returns>2D list where the outer list represents rows and the inner list represents columns</returns>
+        </member>
+        <member name="T:SmartOfficeServer.Model.JSONObject">
+            <summary>
+            Converts an object to a JSON object accompnied with a requestType identifier
+            </summary>
+        </member>
+        <member name="M:SmartOfficeServer.Model.JSONObject.#ctor(System.Int32,System.Object)">
+            <summary>
+            Converts an object to a JSON object accompnied with a requestType identifier
+            </summary>
+            <param name="requestType">1: Notifications(Any kind) 2: Coffee 3: Login request 4: Mail request 5: Delivery request 6: Initial user Data 7: delivery history 8: notification history 9: robot status</param>
+            <param name="information">The data to be passed</param>
+        </member>
+        <member name="T:SmartOfficeServer.Model.Mail">
+            <summary>
+            Mail object required by JSON to send mail request to the client/server
+            </summary>
+        </member>
+        <member name="M:SmartOfficeServer.Model.Mail.#ctor(System.String,System.DateTime,System.String,System.String)">
+            <summary>
+            Constructor for mail object
+            </summary>
+            <param name="mailDestination">person the mail needs to go to</param>
+            <param name="mailTime">time the mail needs to be sent</param>
+            <param name="subject">subject of the mail</param>
+            <param name="note">additional remarks that may need to be added</param>
+        </member>
+        <member name="M:SmartOfficeServer.Model.Notification.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Constructor that represnets a notification objecy
+            </summary>
+            <param name="sender">sender of the notification</param>
+            <param name="subject">subject of the notification</param>
+            <param name="description">any added information that needs to be attached</param>
+        </member>
+        <member name="T:SmartOfficeServer.Model.Robot">
+            <summary>
+            Represents the robots in the office
+            </summary>
+        </member>
+        <member name="M:SmartOfficeServer.Model.Robot.#ctor(System.String,System.Double)">
+            <summary>
+            Constructor for the robots
+            </summary>
+            <param name="id">ID assigned to the robot</param>
+            <param name="battery_level">batery level of the associated robot</param>
+        </member>
+        <member name="T:SmartOfficeServer.TCPServer">
+            <summary>
+            The server that mediates between the client and the robots. it handles all the requests, processes them accordingly and then forwards them to the required clients/robots
+            </summary>
+        </member>
+        <member name="F:SmartOfficeServer.TCPServer.server">
+            <summary>
+            server object that maintains connection with differnt clients
+            </summary>
+        </member>
+        <member name="M:SmartOfficeServer.TCPServer.initializeServer">
+            <summary>
+            initialize the server object. mention IP address, add event handlers like on client connected/disconnected/server error etc
+            </summary>
+        </member>
+        <member name="M:SmartOfficeServer.TCPServer.intializeDatabase">
+            <summary>
+            Open database connection and write to console of the outcome of the attempt(fail/success)
+            </summary>
+        </member>
+        <member name="M:SmartOfficeServer.TCPServer.initializeSettings">
+            <summary>
+            get server based settings liked, admins, users etc
+            </summary>
+        </member>
+        <member name="M:SmartOfficeServer.TCPServer.Admin_data_timer_Elapsed(System.Object,System.Timers.ElapsedEventArgs)">
+            <summary>
+            Every 5 min, send a pulse to the admins regarding the robots vitals and logged in employees
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:SmartOfficeServer.TCPServer.Server_OnDataReceived(System.Object,NetworksApi.TCP.SERVER.ReceivedArguments)">
+             <summary>
+             Executed when the server receives data from a client. based on requestType executes different method stubs
+             </summary>
+             <param name="R"> 
+             1: Notifications(Any kind) 2: Coffee 3: Login request 4: Mail request 5: delivery request 6: Initial user Data 7: delivery history 8: notification history 10: recall robot 11: Robot Battery Unity 12: Disconnect User
+             </param>
+            
+        </member>
+        <member name="M:SmartOfficeServer.TCPServer.Disconnect_User_Handler(System.Object)">
+            <summary>
+            Disconnect the said user
+            </summary>
+            <param name="info">name of the user to be disconnected from the server</param>
+            <returns></returns>
+        </member>
+        <member name="M:SmartOfficeServer.TCPServer.Recall_Robot_Handler(System.Object)">
+            <summary>
+            recalls the said robot
+            </summary>
+            <param name="info">the ID of the robot to be recalled</param>
+            <returns></returns>
+        </member>
+        <member name="M:SmartOfficeServer.TCPServer.Notification_Handler(System.String,System.Object)">
+            <summary>
+            Generates a notification for the reciver as well as inserts that data into the database
+            </summary>
+            <param name="sender_name">sender of the notification</param>
+            <param name="info">mail object containing destination, time, subject etc</param>
+        </member>
+        <member name="M:SmartOfficeServer.TCPServer.Delivery_Request_Handler(System.String,System.Object)">
+            <summary>
+            Handles delivery requests. Note: Initial database entries are handled by notification handler
+            </summary>
+            <param name="sender_name">the sender of this request</param>
+            <param name="info">mail object containing destination, time, subject etc</param>
+            <returns></returns>
+        </member>
+        <member name="M:SmartOfficeServer.TCPServer.Mail_Request_Handler(System.String)">
+            <summary>
+            Deliver mail from the mail room to an employee
+            </summary>
+            <param name="name">person who ordered mail from the room</param>
+            <returns></returns>
+        </member>
+        <member name="M:SmartOfficeServer.TCPServer.Notification_History_Handler(System.String)">
+            <summary>
+            Get notification history of the said user from the database 
+            </summary>
+            <param name="name">name of the user the details need to be fetched for</param>
+            <returns>JSON object with the details requested for in strng format</returns>
+        </member>
+        <member name="M:SmartOfficeServer.TCPServer.Delivery_History_Handler(System.String)">
+            <summary>
+            Get delivery history of the said user from the database 
+            </summary>
+            <param name="name">name of the user the details need to be fetched for</param>
+            <returns>JSON object with the details requested for in strng format</returns>
+        </member>
+        <member name="M:SmartOfficeServer.TCPServer.Initial_user_data_handler(System.String)">
+            <summary>
+            Get user details of the said user from the database 
+            </summary>
+            <param name="name">name of the user the details need to be fetched for</param>
+            <returns>JSON object with the details requested for in strng format</returns>
+        </member>
+        <member name="M:SmartOfficeServer.TCPServer.Login_Handler(System.Object)">
+            <summary>
+            Checks for login of the user. returns false if entered details are incorrect. true otherwise
+            Also populates the user object with other details like name, age, department etc
+            </summary>
+            <param name="login_object">User object with username and password initialized</param>
+            <returns></returns>
+        </member>
+        <member name="M:SmartOfficeServer.TCPServer.Coffee_Handler(System.String)">
+            <summary>
+            generates a coffee requst for the user who requested for it. forwards it to the robots to fulfill
+            </summary>
+            <param name="name">user who asked for the coffee</param>
+            <returns>response generated by the request in string format</returns>
+        </member>
+    </members>
+</doc>
