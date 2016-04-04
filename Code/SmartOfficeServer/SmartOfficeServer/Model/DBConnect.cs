@@ -6,7 +6,7 @@ namespace SmartOfficeServer.Model
     /// <summary>
     /// Used to establish connection with the MySQL database
     /// </summary>
-    class DBConnect
+    public class DBConnect
     {
         private MySqlConnection connection = null;
         //private MySqlDataReader reader = null;
@@ -15,6 +15,9 @@ namespace SmartOfficeServer.Model
         private String username;
         private String password;
         private String database;
+        /// <summary>
+        /// Constructor for creating db connection
+        /// </summary>
         public DBConnect()
         {
             Initialize();

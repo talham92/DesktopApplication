@@ -32,3 +32,14 @@ C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\Code\Sm
 C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\Code\SmartOfficeServer\SmartOfficeServer\bin\Debug\SmartOfficeServer.XML
 C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\Code\SmartOfficeServer\SmartOfficeServer\obj\Debug\SmartOfficeServer.exe
 C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\Code\SmartOfficeServer\SmartOfficeServer\obj\Debug\SmartOfficeServer.pdb
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\Code\SmartOfficeServer\SmartOfficeServer\bin\Debug\SmartOfficeServer.exe
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\Code\SmartOfficeServer\SmartOfficeServer\bin\Debug\SmartOfficeServer.pdb
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\Code\SmartOfficeServer\SmartOfficeServer\bin\Debug\EntityFramework.dll
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\Code\SmartOfficeServer\SmartOfficeServer\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\Code\SmartOfficeServer\SmartOfficeServer\bin\Debug\MySql.Data.dll
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\Code\SmartOfficeServer\SmartOfficeServer\bin\Debug\mysql.data.entity.EF6.dll
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\Code\SmartOfficeServer\SmartOfficeServer\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\Code\SmartOfficeServer\SmartOfficeServer\bin\Debug\EntityFramework.xml
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\Code\SmartOfficeServer\SmartOfficeServer\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\Code\SmartOfficeServer\SmartOfficeServer\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Raghav\Documents\Visual Studio 2015\Projects\DesktopApplication\Code\SmartOfficeServer\SmartOfficeServer\obj\Debug\SmartOfficeServer.csprojResolveAssemblyReference.cache

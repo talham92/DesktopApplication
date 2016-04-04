@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NetworksApi.TCP.SERVER;
 using System.Net;
 using System.Net.Sockets;
 using SmartOfficeServer.Model;
 using Newtonsoft.Json;
-using MySql.Data;
 namespace SmartOfficeServer
 {
-    class TCPServer
+    /// <summary>
+    /// The server that mediates between the client and the robots. it handles all the requests, processes them accordingly and then forwards them to the required clients/robots
+    /// </summary>
+    public class TCPServer
     {
-        Server server;
+        /// <summary>
+        /// server object that maintains connection with differnt clients
+        /// </summary>
+        public Server server;
         string iPAddress;
         const string port = "8888";
         JSONObject obj;
@@ -21,7 +24,7 @@ namespace SmartOfficeServer
         List<List<String>> users = new List<List<string>>();
         List<List<String>> admins = new List<List<String>>();
         List<List<String>> robot_status = null;
-        List<String> logged_in_users = new List<string>();
+        public List<String> logged_in_users = new List<string>();
         System.Timers.Timer admin_data_timer = new System.Timers.Timer(10000);
         private const string unity_client = "unity";
         //1: Notifications(Any kind) 2: Coffee 3: Login request 4: Mail request 5: Delivery Request 6: Initial user Data 7: delivery history 8: notification history 10:recall robot
@@ -35,73 +38,10 @@ namespace SmartOfficeServer
         private const int NOTIFICATION_HISTORY = 8;
         private const int ADMIN_DATA = 9;
         private const int RECALL_ROBOT = 10;
-        public static int Main(string[] args)
-        {
-            
-            GetLocalIPAddress();
-            TCPServer Init = new TCPServer();
-            Console.WriteLine("Begin Server initialization..............");
-            Init.initializeServer();
-            Console.WriteLine("Begin database initialization............");
-            Init.intializeDatabase();
-            Console.WriteLine("Fetching list of users............");
-            Init.initializeSettings();
-            Console.WriteLine("Ending Initialization...... \nServer setup fully \n==================================");
 
-        /*
-        List<List<String>> data = new List<List<string>>();
-        String name = "raghav";
-
-        data = Init.MySQlConnection.SelectAll("user", "id", "username = '" + name + "'; ");
-
-        Console.WriteLine(data.ElementAt(0).ElementAt(0));
-        String id = data.ElementAt(0).ElementAt(0);
-
-        data = Init.MySQlConnection.SelectAll("user", "*", "true");
-
-
-        //Now we just need to serialize this chunk of data into a JSON object and pass it on to the client
-        JSONObject obj = new JSONObject(DELIVERY_HISTORY, data);
-        String jasonString =  JsonConvert.SerializeObject(obj);
-
-        JSONObject obj2 = JsonConvert.DeserializeObject<JSONObject>(jasonString);
-        List<List<String>> jsonList = JsonConvert.DeserializeObject<List<List<String>>>(obj2.info.ToString());
-
-        foreach(List<String> list in jsonList)
-        {
-            foreach(String d in list)
-            {
-                Console.Write(d + "  ");
-            }
-            Console.WriteLine();
-        }
-        */
-
-        //Console.WriteLine("Press enter to close...");
-        Read:
-            String input = Console.ReadLine();
-            if (input.ToLower() == "disconnect all")
-            {
-
-                foreach (String user in Init.logged_in_users)
-                {
-                    try
-                    {
-                        Init.server.DisconnectClient(user);
-                        Console.WriteLine("Disconnected " + user);
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine("Error disconnecting: " + user);
-                    }
-                    //Init.server.DisconnectClient()
-                }
-            }
-                goto Read;
-            return 0;
-
-        }
-
+        /// <summary>
+        /// initialize the server object. mention IP address, add event handlers like on client connected/disconnected/server error etc
+        /// </summary>
         public void initializeServer()
         {
             //dynamically gets the local IP address of the server
@@ -117,6 +57,9 @@ namespace SmartOfficeServer
            // Console.WriteLine("Server Connected! \n");
 
         }
+        /// <summary>
+        /// Open database connection and write to console of the outcome of the attempt(fail/success)
+        /// </summary>
         public void intializeDatabase()
         {
             //Open DB connection and display message
@@ -130,6 +73,9 @@ namespace SmartOfficeServer
                 Console.WriteLine("Error connecting to database\n");
             }
         }
+        /// <summary>
+        /// get server based settings liked, admins, users etc
+        /// </summary>
         public void initializeSettings()
         {
             users  = MySQlConnection.SelectAll("user", "id,username", "true");
@@ -181,10 +127,10 @@ namespace SmartOfficeServer
         /// <summary>
         /// Executed when the server receives data from a client. based on requestType executes different method stubs
         /// </summary>
-        /// <param name="requestType"> 
+        /// <param name="R"> 
         /// 1: Notifications(Any kind) 2: Coffee 3: Login request 4: Mail request 5: delivery request 6: Initial user Data 7: delivery history 8: notification history 10: recall robot 11: Robot Battery Unity 12: Disconnect User
         /// </param>
-        /// <param name="obj">Desired data</param>
+        ///
         private void Server_OnDataReceived(object Sender, ReceivedArguments R)
         {
             String response = "";
@@ -265,6 +211,11 @@ namespace SmartOfficeServer
         }
 
 
+        /// <summary>
+        /// Disconnect the said user
+        /// </summary>
+        /// <param name="info">name of the user to be disconnected from the server</param>
+        /// <returns></returns>
         private String Disconnect_User_Handler(object info)
         {
 
@@ -280,6 +231,11 @@ namespace SmartOfficeServer
         }
 
 
+        /// <summary>
+        /// recalls the said robot
+        /// </summary>
+        /// <param name="info">the ID of the robot to be recalled</param>
+        /// <returns></returns>
         private string Recall_Robot_Handler(object info)
         {
             //send data to unity
@@ -290,8 +246,8 @@ namespace SmartOfficeServer
         /// <summary>
         /// Generates a notification for the reciver as well as inserts that data into the database
         /// </summary>
-        /// <param name="sender_name"></param>
-        /// <param name="info"></param>
+        /// <param name="sender_name">sender of the notification</param>
+        /// <param name="info">mail object containing destination, time, subject etc</param>
         private void Notification_Handler(string sender_name, object info)
         {
             String json = JsonConvert.SerializeObject(info);
@@ -360,7 +316,8 @@ namespace SmartOfficeServer
         /// <summary>
         /// Handles delivery requests. Note: Initial database entries are handled by notification handler
         /// </summary>
-        /// <param name="name">the sender of this request</param>
+        /// <param name="sender_name">the sender of this request</param>
+        /// <param name="info">mail object containing destination, time, subject etc</param>
         /// <returns></returns>
         private string Delivery_Request_Handler(string sender_name, object info)
         {
@@ -378,7 +335,7 @@ namespace SmartOfficeServer
         /// <summary>
         /// Deliver mail from the mail room to an employee
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">person who ordered mail from the room</param>
         /// <returns></returns>
         private String Mail_Request_Handler(string name)
         {
@@ -387,6 +344,11 @@ namespace SmartOfficeServer
             return JsonConvert.SerializeObject(new JSONObject(MAIL_REQUEST, "A robot will deliver you your mail soon!"));
         }
 
+        /// <summary>
+        /// Get notification history of the said user from the database 
+        /// </summary>
+        /// <param name="name">name of the user the details need to be fetched for</param>
+        /// <returns>JSON object with the details requested for in strng format</returns>
         private String Notification_History_Handler(string name)
         {
             List<List<String>> notification;
@@ -404,6 +366,11 @@ namespace SmartOfficeServer
             return JsonConvert.SerializeObject(obj);
         }
 
+        /// <summary>
+        /// Get delivery history of the said user from the database 
+        /// </summary>
+        /// <param name="name">name of the user the details need to be fetched for</param>
+        /// <returns>JSON object with the details requested for in strng format</returns>
         private String Delivery_History_Handler(string name)
         {
             List<List<String>> delivery;
@@ -421,6 +388,11 @@ namespace SmartOfficeServer
             return JsonConvert.SerializeObject(obj);
         }
 
+        /// <summary>
+        /// Get user details of the said user from the database 
+        /// </summary>
+        /// <param name="name">name of the user the details need to be fetched for</param>
+        /// <returns>JSON object with the details requested for in strng format</returns>
         private String Initial_user_data_handler(string name)
         {
             List<List<String>> user;
@@ -442,7 +414,7 @@ namespace SmartOfficeServer
         /// Checks for login of the user. returns false if entered details are incorrect. true otherwise
         /// Also populates the user object with other details like name, age, department etc
         /// </summary>
-        /// <param name="login">User object with username and password initialized</param>
+        /// <param name="login_object">User object with username and password initialized</param>
         /// <returns></returns>
         public String Login_Handler(Object login_object)
         {
@@ -481,6 +453,11 @@ namespace SmartOfficeServer
 
         }//end login
 
+        /// <summary>
+        /// generates a coffee requst for the user who requested for it. forwards it to the robots to fulfill
+        /// </summary>
+        /// <param name="name">user who asked for the coffee</param>
+        /// <returns>response generated by the request in string format</returns>
         private String Coffee_Handler(string name)
         {
 
@@ -506,7 +483,7 @@ namespace SmartOfficeServer
             logged_in_users.Add(R.Name);
             
         }
-        public static string GetLocalIPAddress()
+        static string GetLocalIPAddress()
         {
             string IP4Address = String.Empty;
             foreach (IPAddress IPA in Dns.GetHostAddresses(Dns.GetHostName()))
